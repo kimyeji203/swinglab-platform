@@ -1,0 +1,32 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /common
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://13.125.190.65:5432/swinglab?currentSchema=public&useSSL=false&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&stringtype=unspecified
+    username: swinglab
+    password: qhdks@00
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql:
+              spi: trace
