@@ -14,6 +14,9 @@ target/
 .sts4-cache
 .DS_Store
 
+### gradle ###
+.gradle
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -32,10 +35,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/.gradle/7.6.1/executionHistory/executionHistory.bin
-/.gradle/file-system.probe
-/.gradle/7.6.1/fileHashes/fileHashes.bin
-/.gradle/7.6.1/checksums/md5-checksums.bin
-/.gradle/buildOutputCleanup/outputFiles.bin
-/.gradle/7.6.1/fileHashes/resourceHashesCache.bin
-/.gradle/7.6.1/checksums/sha1-checksums.bin
