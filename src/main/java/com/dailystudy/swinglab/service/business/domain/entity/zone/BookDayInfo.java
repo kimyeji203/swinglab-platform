@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.business.jpa.entity.zone;
+package com.dailystudy.swinglab.service.business.domain.entity.zone;
 
 import lombok.Data;
 

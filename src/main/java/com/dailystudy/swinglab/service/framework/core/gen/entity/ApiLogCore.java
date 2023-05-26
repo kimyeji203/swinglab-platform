@@ -1,6 +1,6 @@
-package com.dailystudy.swinglab.service.framework.jpa.gen.entity;
+package com.dailystudy.swinglab.service.framework.core.gen.entity;
 
-import com.dailystudy.swinglab.service.framework.jpa.BaseEntity;
+import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import jakarta.persistence.EntityListeners;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 

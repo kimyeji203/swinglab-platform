@@ -1,6 +1,6 @@
-package com.dailystudy.swinglab.service.business.jpa.entity.user;
+package com.dailystudy.swinglab.service.business.domain.entity.user;
 
-import com.dailystudy.swinglab.service.framework.jpa.gen.entity.UserCore;
+import com.dailystudy.swinglab.service.framework.core.gen.entity.UserCore;
 import jakarta.persistence.Transient;
 import lombok.*;
 

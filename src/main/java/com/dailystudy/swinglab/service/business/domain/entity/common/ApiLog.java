@@ -1,6 +1,6 @@
-package com.dailystudy.swinglab.service.business.jpa.entity.common;
+package com.dailystudy.swinglab.service.business.domain.entity.common;
 
-import com.dailystudy.swinglab.service.framework.jpa.gen.entity.ApiLogCore;
+import com.dailystudy.swinglab.service.framework.core.gen.entity.ApiLogCore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;

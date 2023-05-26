@@ -1,6 +1,6 @@
-package com.dailystudy.swinglab.service.framework.jpa.gen.entity;
+package com.dailystudy.swinglab.service.framework.core.gen.entity;
 
-import com.dailystudy.swinglab.service.framework.jpa.BaseEntity;
+import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
