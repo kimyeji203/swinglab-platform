@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.business.zone.controller;
 
-import com.dailystudy.swinglab.service.business.jpa.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
 import com.dailystudy.swinglab.service.business.zone.service.ZoneService;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;

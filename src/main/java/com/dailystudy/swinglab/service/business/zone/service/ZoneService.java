@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
-import com.dailystudy.swinglab.service.business.jpa.entity.zone.BookDayInfo;
-import com.dailystudy.swinglab.service.business.jpa.entity.zone.SwingZone;
-import com.dailystudy.swinglab.service.business.jpa.repository.zone.SwingZoneRepository;
+import com.dailystudy.swinglab.service.business.domain.entity.zone.BookDayInfo;
+import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.repository.zone.SwingZoneRepository;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
