@@ -1,9 +1,7 @@
 package com.dailystudy.swinglab.service;
 
-import com.dailystudy.swinglab.service.business.jpa.entity.user.User;
-import com.dailystudy.swinglab.service.business.jpa.repository.user.UserRepository;
-import com.dailystudy.swinglab.service.framework.jpa.gen.entity.UserCore;
-import lombok.RequiredArgsConstructor;
+import com.dailystudy.swinglab.service.business.domain.entity.user.User;
+import com.dailystudy.swinglab.service.business.repository.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
