@@ -11,5 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long>
     List<User> findAllByLoginIdAndDelYnFalse(String loginId);
     List<User> findAllByLoginIdAndUserIdNotAndDelYnFalse(String loginId, Long userSid);
 
-    Optional<User> findOneByLoginId(String loginId);
+    User findByLoginIdAndDelYnFalse(String loginId);
 }

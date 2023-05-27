@@ -1,5 +1,6 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
+import com.dailystudy.swinglab.service.business.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.domain.entity.zone.BookDayInfo;
 import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
 import com.dailystudy.swinglab.service.business.repository.zone.SwingZoneRepository;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -27,6 +30,7 @@ public class ZoneService {
      * @return
      */
     public List<SwingZone> getZoneAllList() {
+        Object obj = (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return swingZoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
     }
 

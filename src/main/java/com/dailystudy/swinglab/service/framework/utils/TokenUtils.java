@@ -1,10 +1,10 @@
 package com.dailystudy.swinglab.service.framework.utils;
 
 import com.dailystudy.swinglab.service.business.domain.entity.user.User;
+import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import io.jsonwebtoken.*;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -22,22 +22,24 @@ import java.util.Map;
  * @since 2022.12.23
  */
 @Slf4j
-public class TokenUtils {
-
-    private static final String jwtSecretKey = "2023_tmdnldfoq_vmffotvha";
+public class TokenUtils
+{
+    // 2023-rlvdmstodrkr-tmdnldfoq-vmffotvha-tlzmfltzl
+    private static final String JWT_SECRET_KEY = "MjAyMy1ybHZkbXN0b2Rya3ItdG1kbmxkZm9xLXZtZmZvdHZoYS10bHptZmx0emw=";
 
     /**
      * 사용자 정보를 기반으로 토큰을 생성하여 반환 해주는 메서드
      *
-     * @param userDto UserDto : 사용자 정보
+     * @param user user : 사용자 정보
      * @return String : 토큰
      */
-    public static String generateJwtToken(User userDto) {
+    public static String generateJwtToken (User user)
+    {
         // 사용자 시퀀스를 기준으로 JWT 토큰을 발급하여 반환해줍니다.
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())                              // Header 구성
-                .setClaims(createClaims(userDto))                       // Payload - Claims 구성
-                .setSubject(String.valueOf(userDto.getUserId()))        // Payload - Subject 구성
+                .setClaims(createClaims(user))                       // Payload - Claims 구성
+                .setSubject(String.valueOf(user.getUserId()))        // Payload - Subject 구성
                 .signWith(SignatureAlgorithm.HS256, createSignature())  // Signature 구성
                 .setExpiration(createExpiredDate());                    // Expired Date 구성
         return builder.compact();
@@ -49,9 +51,10 @@ public class TokenUtils {
      * @param token String : 토큰
      * @return String : 사용자 정보
      */
-    public static String parseTokenToUserInfo(String token) {
+    public static String parseTokenToUserInfo (String token)
+    {
         return Jwts.parser()
-                .setSigningKey(jwtSecretKey)
+                .setSigningKey(JWT_SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -63,8 +66,10 @@ public class TokenUtils {
      * @param token String  : 토큰
      * @return boolean      : 유효한지 여부 반환
      */
-    public static boolean isValidToken(String token) {
-        try {
+    public static boolean isValidToken (String token)
+    {
+        try
+        {
             Claims claims = getClaimsFormToken(token);
 
             log.info("expireTime :" + claims.getExpiration());
@@ -72,13 +77,16 @@ public class TokenUtils {
             log.info("userNm :" + claims.get("userNm"));
 
             return true;
-        } catch (ExpiredJwtException exception) {
+        } catch (ExpiredJwtException exception)
+        {
             log.error("Token Expired");
             return false;
-        } catch (JwtException exception) {
+        } catch (JwtException exception)
+        {
             log.error("Token Tampered");
             return false;
-        } catch (NullPointerException exception) {
+        } catch (NullPointerException exception)
+        {
             log.error("Token is null");
             return false;
         }
@@ -90,7 +98,12 @@ public class TokenUtils {
      * @param header 헤더
      * @return String
      */
-    public static String getTokenFromHeader(String header) {
+    public static String getTokenFromHeader (String header)
+    {
+        if (!header.startsWith(SwinglabConst.BEARER_TOKEN))
+        {
+            return StringUtils.EMPTY;
+        }
         return header.split(" ")[1];
     }
 
@@ -99,7 +112,8 @@ public class TokenUtils {
      *
      * @return Calendar
      */
-    private static Date createExpiredDate() {
+    private static Date createExpiredDate ()
+    {
         // 토큰 만료시간은 30일으로 설정
         Calendar c = Calendar.getInstance();
         c.add(Calendar.HOUR, 8);     // 8시간
@@ -112,7 +126,8 @@ public class TokenUtils {
      *
      * @return HashMap<String, Object>
      */
-    private static Map<String, Object> createHeader() {
+    private static Map<String, Object> createHeader ()
+    {
         Map<String, Object> header = new HashMap<>();
 
         header.put("typ", "JWT");
@@ -127,7 +142,8 @@ public class TokenUtils {
      * @param userDto 사용자 정보
      * @return Map<String, Object>
      */
-    private static Map<String, Object> createClaims(User userDto) {
+    private static Map<String, Object> createClaims (User userDto)
+    {
         // 공개 클레임에 사용자의 이름과 이메일을 설정하여 정보를 조회할 수 있다.
         Map<String, Object> claims = new HashMap<>();
 
@@ -144,8 +160,9 @@ public class TokenUtils {
      *
      * @return Key
      */
-    private static Key createSignature() {
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
+    private static Key createSignature ()
+    {
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(JWT_SECRET_KEY);
         return new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
@@ -155,8 +172,9 @@ public class TokenUtils {
      * @param token : 토큰
      * @return Claims : Claims
      */
-    private static Claims getClaimsFormToken(String token) {
-        return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
+    private static Claims getClaimsFormToken (String token)
+    {
+        return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(JWT_SECRET_KEY))
                 .parseClaimsJws(token).getBody();
     }
 
@@ -166,8 +184,9 @@ public class TokenUtils {
      * @param token : 토큰
      * @return String : 사용자 아이디
      */
-    public static String getUserIdFromToken(String token) {
+    public static String getLoginIdFromToken (String token)
+    {
         Claims claims = getClaimsFormToken(token);
-        return claims.get("userId").toString();
+        return claims.get("loginId").toString();
     }
 }

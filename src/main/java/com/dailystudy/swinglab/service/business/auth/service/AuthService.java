@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.utils.Base64;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,8 +18,11 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService extends BaseService {
+public class AuthService extends BaseService
+{
     private final UserRepository userRepository;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * 로그인 아이디 중복 체크
@@ -26,11 +30,13 @@ public class AuthService extends BaseService {
      * @param userSid
      * @param loginId
      */
-    private void assertNotExistLoginId(Long userSid, String loginId) {
+    private void assertNotExistLoginId (Long userSid, String loginId)
+    {
         List<User> list = userSid == null
                 ? userRepository.findAllByLoginIdAndDelYnFalse(loginId)
                 : userRepository.findAllByLoginIdAndUserIdNotAndDelYnFalse(loginId, userSid);
-        if (list.isEmpty() == false) {
+        if (list.isEmpty() == false)
+        {
             throw new SwinglabBadRequestException("해당 '로그인ID'는 이미 존재합니다.");
         }
     }
@@ -41,15 +47,15 @@ public class AuthService extends BaseService {
      * @param pwd
      * @param pwdChk
      */
-    private void validatePwd(String pwd, String pwdChk)
+    private void validatePwd (String pwd, String pwdChk)
     {
         // 비밀번호 확인 일치 여부 체크
-        if(pwdChk != null && pwd.equals(pwdChk) == false)
+        if (pwdChk != null && pwd.equals(pwdChk) == false)
         {
             throw new SwinglabBadRequestException("비밀번호가 일치하지 않습니다.");
         }
         // 비밀번호 규격 체크
-        if(StringValidUtil.isInValidPwd(pwd))
+        if (StringValidUtil.isInValidPwd(pwd))
         {
             throw new SwinglabBadRequestException("비밀번호는 '영문, 숫자, !, @'만 가능하며 최소 4자 ~ 최대 10자까지 가능합니다.");
         }
@@ -61,7 +67,8 @@ public class AuthService extends BaseService {
      * @param param
      * @return
      */
-    public User signupUser(User param) {
+    public User signupUser (User param)
+    {
         /*
          * 유효성 검사
          */
@@ -84,12 +91,13 @@ public class AuthService extends BaseService {
          * 데이터 저장
          */
         // 기본값 세팅
-        if (StringUtils.isBlank(param.getNickNm())) {
+        if (StringUtils.isBlank(param.getNickNm()))
+        {
             param.setNickNm(param.getName());
         }
         param.setSignupDt(new Date());
         param.setDelYn(false);
-        param.setPwd(pwd);
+        param.setPwd(bCryptPasswordEncoder.encode(pwd));
 
         // [INSERT] TB_USER
         User result = userRepository.save(param);

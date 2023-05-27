@@ -21,6 +21,13 @@ spring:
     username: swinglab
     password: qhdks@00
 
+security:
+  permitAll: >
+    ${server.servlet.context-path}/v1/auth/login
+    ,${server.servlet.context-path}/v1/auth/signup
+  ignoring: >
+    /favicon.ico
+
 logging:
   level:
     org:
