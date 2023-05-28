@@ -24,21 +24,23 @@ public class ZoneController
 
     /**
      * 타석 목록 조회
+     *
      * @return
      */
     @GetMapping(ZoneUriConst.GET_ZONE_LIST)
-    public ResponseEntity<SuccessResponse<List<SwingZone>>> getZoneList()
+    public ResponseEntity<SuccessResponse<List<SwingZone>>> getZoneList ()
     {
         return PlatformResponseBuilder.build(zoneService.getZoneAllList());
     }
 
     /**
      * 타석 상세 조회
+     *
      * @param zoneId
      * @return
      */
     @GetMapping(ZoneUriConst.GET_ZONE_DETAIL)
-    public ResponseEntity<SuccessResponse<SwingZone>> getZoneDetail(@PathVariable("zoneId") Long zoneId)
+    public ResponseEntity<SuccessResponse<SwingZone>> getZoneDetail (@PathVariable("zoneId") Long zoneId)
     {
         return PlatformResponseBuilder.build(zoneService.getZoneDetail(zoneId));
     }

@@ -1,9 +1,9 @@
 package com.dailystudy.swinglab.service.framework.auth.filter;
 
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
 import com.dailystudy.swinglab.service.framework.utils.StringUtil;
-import com.dailystudy.swinglab.service.framework.utils.TokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -24,6 +24,8 @@ public class JwtAuthFilter extends GenericFilterBean
 {
     @Value("${security.permitAll}")
     private List<String> permitAllUris;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void doFilter (ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
@@ -47,23 +49,23 @@ public class JwtAuthFilter extends GenericFilterBean
         }
 
         // 3. Token 확인
-        String token = TokenUtils.getTokenFromHeader(header);
-        if (!TokenUtils.isValidToken(token))
+        String token = jwtTokenProvider.getTokenFromHeader(header);
+        if (!jwtTokenProvider.isValidToken(token))
         {
             log.error("{} : invalided token", httpRequest.getRequestURI());
             throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");
         }
 
         // 4. 로그인아이디 확인
-        String loginId = TokenUtils.getLoginIdFromToken(token);
+        String loginId = jwtTokenProvider.getLoginIdFromToken(token);
         if (StringUtil.isEmptyString(loginId))
         {
             log.error("{} : loginId in token is empty", httpRequest.getRequestURI());
             throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");
         }
 
-        // TODO TokenUtil -> JwtTokenProvider로 변경 하고 -> 여기서  SecurityContextHolder에 인증객체 세팅하기.
-//        SecurityContextHolder.getContext().setAuthentication();
+        //  SecurityContextHolder에 인증객체 세팅하기.
+        SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthenticationFromToken(loginId));
 
         chain.doFilter(httpRequest, response);
     }

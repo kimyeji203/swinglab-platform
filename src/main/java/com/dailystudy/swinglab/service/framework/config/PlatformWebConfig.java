@@ -24,75 +24,76 @@ import java.util.List;
 @EnableSpringDataWebSupport
 public class PlatformWebConfig extends DelegatingWebMvcConfiguration
 {
-	final Integer cachePeriod = 3600*30;
-	private final List<String> defResourceLocations = new ArrayList<>(Arrays.asList("/favicon.ico","/css/","/js/","/images/","/fonts/"));
+    final Integer cachePeriod = 3600 * 30;
+    private final List<String> defResourceLocations = new ArrayList<>(Arrays.asList("/favicon.ico", "/css/", "/js/", "/images/", "/fonts/"));
 
-	@Autowired
-	private MappingJackson2HttpMessageConverter jsonConvertor;
-	
-	@Autowired
-	@Qualifier(value = "platformHttpInterceptor")
-	private HandlerInterceptor interceptor;
+    @Autowired
+    private MappingJackson2HttpMessageConverter jsonConvertor;
 
-	@Override
-	protected void configureContentNegotiation(ContentNegotiationConfigurer configurer)
-	{
-		super.configureContentNegotiation(configurer);
-		configurer.defaultContentType(MediaType.APPLICATION_JSON);
-	}
+    @Autowired
+    @Qualifier(value = "platformHttpInterceptor")
+    private HandlerInterceptor interceptor;
 
-	@Override
-	protected void configureMessageConverters(List<HttpMessageConverter<?>> converters)
-	{
-		addDefaultHttpMessageConverters(converters);
-		converters.add(jsonConvertor);
-	}
+    @Override
+    protected void configureContentNegotiation (ContentNegotiationConfigurer configurer)
+    {
+        super.configureContentNegotiation(configurer);
+        configurer.defaultContentType(MediaType.APPLICATION_JSON);
+    }
 
-	@Override
-	// @Bean
-	public RequestMappingHandlerMapping requestMappingHandlerMapping(
-			@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
-			@Qualifier("mvcConversionService") FormattingConversionService conversionService,
-			@Qualifier("mvcResourceUrlProvider") ResourceUrlProvider resourceUrlProvider) {
+    @Override
+    protected void configureMessageConverters (List<HttpMessageConverter<?>> converters)
+    {
+        addDefaultHttpMessageConverters(converters);
+        converters.add(jsonConvertor);
+    }
 
-		RequestMappingHandlerMapping handler = super.requestMappingHandlerMapping(contentNegotiationManager, conversionService, resourceUrlProvider);
-	    handler.setOrder(1);
-	    return handler;
-	}
-	
-	@Override
-    public void configureViewResolvers(ViewResolverRegistry registry)
+    @Override
+    // @Bean
+    public RequestMappingHandlerMapping requestMappingHandlerMapping (
+            @Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
+            @Qualifier("mvcConversionService") FormattingConversionService conversionService,
+            @Qualifier("mvcResourceUrlProvider") ResourceUrlProvider resourceUrlProvider)
+    {
+
+        RequestMappingHandlerMapping handler = super.requestMappingHandlerMapping(contentNegotiationManager, conversionService, resourceUrlProvider);
+        handler.setOrder(1);
+        return handler;
+    }
+
+    @Override
+    public void configureViewResolvers (ViewResolverRegistry registry)
     {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
         resolver.setViewClass(JstlView.class);
-        
+
         registry.viewResolver(resolver);
     }
 
-	private void addResourceInRegistry(ResourceHandlerRegistry registry, String resourceLocation)
-	{
-		String pathPattern = resourceLocation;
-		if (resourceLocation.endsWith("/"))
-		{
-			pathPattern = resourceLocation.concat("**");
-		}
+    private void addResourceInRegistry (ResourceHandlerRegistry registry, String resourceLocation)
+    {
+        String pathPattern = resourceLocation;
+        if (resourceLocation.endsWith("/"))
+        {
+            pathPattern = resourceLocation.concat("**");
+        }
 
+        registry.addResourceHandler(pathPattern).addResourceLocations(resourceLocation).setCachePeriod(cachePeriod)
+                .resourceChain(false);
+    }
 
-		registry.addResourceHandler(pathPattern).addResourceLocations(resourceLocation).setCachePeriod(cachePeriod)
-			.resourceChain(false);
-	}
-	
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(interceptor).addPathPatterns("/**")				
-				.excludePathPatterns("/login/**")
-				.excludePathPatterns("/file/**", "/fileDownload/**", "/")
-				.excludePathPatterns("/fonts/**")
-				.excludePathPatterns("/css/**")
-				.excludePathPatterns("/images/**")
-				.excludePathPatterns("/js/**");
-	}
+    @Override
+    public void addInterceptors (InterceptorRegistry registry)
+    {
+        registry.addInterceptor(interceptor).addPathPatterns("/**")
+                .excludePathPatterns("/login/**")
+                .excludePathPatterns("/file/**", "/fileDownload/**", "/")
+                .excludePathPatterns("/fonts/**")
+                .excludePathPatterns("/css/**")
+                .excludePathPatterns("/images/**")
+                .excludePathPatterns("/js/**");
+    }
 
 }

@@ -4,16 +4,14 @@ import com.dailystudy.swinglab.service.business.auth.service.AuthService;
 import com.dailystudy.swinglab.service.business.domain.JwtToken;
 import com.dailystudy.swinglab.service.business.domain.entity.user.User;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
 import com.dailystudy.swinglab.service.framework.http.uris.AuthUriConts;
-import com.dailystudy.swinglab.service.framework.utils.StringUtil;
-import com.dailystudy.swinglab.service.framework.utils.TokenUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.utils.Base64;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,6 +29,7 @@ public class AuthController
 {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 회원가입
@@ -56,14 +55,10 @@ public class AuthController
     {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getLoginId(), new String(Base64.decodeBase64(user.getPwd())));
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = TokenUtils.generateJwtToken(user);
 
-        response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", token));
-
-        JwtToken result = new JwtToken();
-        result.setAccessToken(token);
+        JwtToken result = jwtTokenProvider.generateJwtToken(user);
+        response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", result.getAccessToken()));
         return PlatformResponseBuilder.build(result);
     }
 }

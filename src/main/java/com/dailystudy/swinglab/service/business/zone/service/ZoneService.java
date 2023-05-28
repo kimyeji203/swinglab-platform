@@ -1,6 +1,5 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.domain.entity.zone.BookDayInfo;
 import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
 import com.dailystudy.swinglab.service.business.repository.zone.SwingZoneRepository;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ZoneService {
+public class ZoneService
+{
     private final SwingZoneRepository swingZoneRepository;
 
     /**
@@ -29,7 +28,8 @@ public class ZoneService {
      *
      * @return
      */
-    public List<SwingZone> getZoneAllList() {
+    public List<SwingZone> getZoneAllList ()
+    {
         Object obj = (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return swingZoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
     }
@@ -40,9 +40,11 @@ public class ZoneService {
      * @param zoneSid
      * @return
      */
-    public SwingZone getZoneDetail(Long zoneSid) {
+    public SwingZone getZoneDetail (Long zoneSid)
+    {
         Optional<SwingZone> optional = swingZoneRepository.findById(zoneSid);
-        if (optional.isPresent() == false) {
+        if (optional.isPresent() == false)
+        {
             throw new SwinglabNotFoundException("존재하지 않는 타석입니다.");
         }
         // TODO 금일 예약 가능 여부
@@ -51,7 +53,8 @@ public class ZoneService {
         return optional.get();
     }
 
-    public List<BookDayInfo> getBookDayInfoList(Date bookDaySt, Date bookDayEd) {
+    public List<BookDayInfo> getBookDayInfoList (Date bookDaySt, Date bookDayEd)
+    {
         bookDaySt = DateUtils.truncate(bookDaySt == null
                 ? new Date()
                 : bookDaySt, Calendar.DATE);

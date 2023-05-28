@@ -22,6 +22,9 @@ spring:
     password: qhdks@00
 
 security:
+  jwt:
+    # 2023-rlvdmstodrkr-tmdnldfoq-vmffotvha-tlzmfltzl MjAyMy1ybHZkbXN0b2Rya3ItdG1kbmxkZm9xLXZtZmZvdHZoYS10bHptZmx0emw=
+    key: 2023-rlvdmstodrkr-tmdnldfoq-vmffotvha-tlzmfltzl
   permitAll: >
     ${server.servlet.context-path}/v1/auth/login
     ,${server.servlet.context-path}/v1/auth/signup

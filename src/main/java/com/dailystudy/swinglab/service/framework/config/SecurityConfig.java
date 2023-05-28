@@ -1,8 +1,10 @@
 package com.dailystudy.swinglab.service.framework.config;
 
+import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.auth.filter.JwtAuthFilter;
 import com.dailystudy.swinglab.service.framework.auth.handler.AuthAccessDeniedHandler;
 import com.dailystudy.swinglab.service.framework.auth.handler.AuthExceptionEntryPoint;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -22,6 +24,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig
 {
     @Value("${security.ignoring}")
@@ -29,6 +32,8 @@ public class SecurityConfig
 
     @Value("${security.permitAll}")
     private String[] permitAllUris;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public HttpFirewall defaultHttpFirewall ()
@@ -67,7 +72,7 @@ public class SecurityConfig
     @Bean
     public JwtAuthFilter jwtAuthFilter ()
     {
-        return new JwtAuthFilter();
+        return new JwtAuthFilter(jwtTokenProvider);
     }
 
     @Bean
