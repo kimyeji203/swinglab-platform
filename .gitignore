@@ -16,6 +16,8 @@ target/
 
 ### gradle ###
 .gradle
+.gradle/buildOutputCleanup/
+.gradle/7.6.1/
 
 ### IntelliJ IDEA ###
 .idea
