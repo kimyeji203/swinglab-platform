@@ -1,6 +1,7 @@
 package com.dailystudy.swinglab.service.framework.config;
 
 import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
+import com.dailystudy.swinglab.service.framework.auth.filter.JwtAuthExceptionFilter;
 import com.dailystudy.swinglab.service.framework.auth.filter.JwtAuthFilter;
 import com.dailystudy.swinglab.service.framework.auth.handler.AuthAccessDeniedHandler;
 import com.dailystudy.swinglab.service.framework.auth.handler.AuthExceptionEntryPoint;
@@ -17,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
@@ -76,23 +76,34 @@ public class SecurityConfig
     }
 
     @Bean
+    public JwtAuthExceptionFilter jwtExceptionFilter ()
+    {
+        return new JwtAuthExceptionFilter();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception
     {
+        // csrf, form 로그인 비활성화
         http.csrf().disable();
         http.formLogin().disable();
 
+        // 권한 허용 uri 설정
         http.authorizeHttpRequests()
                 .requestMatchers(permitAllUris).permitAll();
 
+        // session 사용 비활성화
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(jwtAuthFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // 필터 추가 (JWT 토큰 인증 필터, JWT 토큰 인증 exception 필터)
+        http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter(), JwtAuthFilter.class);
+
+        // 인증/인가 에러 핸들링
         http.exceptionHandling()
                 .authenticationEntryPoint(authExceptionEntryPoint())
                 .accessDeniedHandler(authAccessDeniedHandler());
-
-        http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

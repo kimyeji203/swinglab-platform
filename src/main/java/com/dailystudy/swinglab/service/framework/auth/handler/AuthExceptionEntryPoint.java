@@ -25,7 +25,7 @@ public class AuthExceptionEntryPoint implements AuthenticationEntryPoint
         try
         {
             ErrorResponse errorResponse = new ErrorResponse();
-            errorResponse.setErrorCode(HttpStatus.UNAUTHORIZED.toString());
+            errorResponse.setErrorCode(String.valueOf(HttpStatus.UNAUTHORIZED.value()));
             errorResponse.setErrorMessage("인증되지 않은 사용자 입니다.");
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);

@@ -23,7 +23,7 @@ public class AuthAccessDeniedHandler implements AccessDeniedHandler
         try
         {
             ErrorResponse errorResponse = new ErrorResponse();
-            errorResponse.setErrorCode(HttpStatus.FORBIDDEN.toString());
+            errorResponse.setErrorCode(String.valueOf(HttpStatus.FORBIDDEN.value()));
             errorResponse.setErrorMessage("접근할 수 있는 권한이 없습니다.");
 
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
