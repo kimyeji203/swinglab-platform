@@ -8,12 +8,12 @@ TODAY=$(date +"%Y%m%d")
 TODAY_TARGET_DIR=$TARGET_DIR/$TODAY/
 
 if [ "$PJ" == "-h" ] || [ "$PJ" == "--help" ]; then
-  echo "These are build-copy.sh commands:
+  echo "These are deploy-dev.sh commands:
   first command option : target project
-      a, all         all project (comon-service)
-      cs, common-service     comon-service
+      a, all         all project (swinglab-platform)
+      sp, swinglab-platform     swinglab-platform
 
-  second command option
+  second command option : execute caims-build-copy.sh
       -b, --build    execute 'gradle build' before copy."
   exit;
 fi
@@ -26,9 +26,9 @@ if [ "$BUILD" == "-b" ] || [ "$BUILD" == "--build" ]; then
   cd ../
 
   if [ "$PJ" == "a" ] || [ "$PJ" == "all" ]; then
-      gradle build
-  elif [ "$PJ" == "cs" ] || [ "$PJ" == "common-service" ]; then
-      gradle build -p launchers/common/common-service
+      ./gradlew build
+  elif [ "$PJ" == "sp" ] || [ "$PJ" == "swinglab-platform" ]; then
+      ./gradlew build
   fi
 
   cd scripts
@@ -46,13 +46,13 @@ fi
 if [ "$PJ" == "a" ] || [ "$PJ" == "all" ]; then
   # common-service
   echo ""
-  echo "common-service.jar copy start!!"
-  cp $PJ_HOME/launchers/common/common-service/$BULD_LIBS/common-service.jar $TODAY_TARGET_DIR
+  echo "swinglab-platform.jar copy start!!"
+  cp $PJ_HOME/$BULD_LIBS/swinglab-platform.jar $TODAY_TARGET_DIR
 
-elif [ "$PJ" == "cs" ] || [ "$PJ" == "common-service" ]; then
+elif [ "$PJ" == "sp" ] || [ "$PJ" == "swinglab-platform" ]; then
   # common-service
   echo ""
-  echo "common-service.jar copy start!!"
-  cp $PJ_HOME/launchers/common/common-service/$BULD_LIBS/common-service.jar $TODAY_TARGET_DIR
+  echo "swinglab-platform.jar copy start!!"
+  cp $PJ_HOME/$BULD_LIBS/swinglab-platform.jar $TODAY_TARGET_DIR
 
 fi

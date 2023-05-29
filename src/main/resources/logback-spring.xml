@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
-    <property name="LOG_HOME" value="/opt/swinglab-service/logs"/>
+    <property name="LOG_HOME" value="/opt/swinglab-platform/logs"/>
     <property name="LOG_BACKUP_HOME" value="${LOG_HOME}/backup"/>
-    <property name="LOG_PREFIX" value="admin" />
+    <property name="LOG_PREFIX" value="swinglab" />
     
     <property name="MAX_HISTORY" value="30" />
     <property name="MAX_FILE_SIZE" value="100MB"/>
