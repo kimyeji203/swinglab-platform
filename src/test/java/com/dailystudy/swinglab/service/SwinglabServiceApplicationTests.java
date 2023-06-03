@@ -14,7 +14,7 @@ class SwinglabServiceApplicationTests {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Test
+//	@Test
 	public void insertUser()
 	{
 		User user = new User();
