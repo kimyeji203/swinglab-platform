@@ -1,5 +1,6 @@
 package com.dailystudy.swinglab.service.framework.http.request;
 
+import com.dailystudy.swinglab.service.framework.http.request.domain.ApiRequestCache;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
 import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;

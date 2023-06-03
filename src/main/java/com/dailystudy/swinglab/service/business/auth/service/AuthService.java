@@ -12,7 +12,7 @@ import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -95,7 +95,7 @@ public class AuthService extends BaseService
         {
             param.setNickNm(param.getName());
         }
-        param.setSignupDt(new Date());
+        param.setSignupDt(LocalDateTime.now());
         param.setDelYn(false);
         param.setPwd(bCryptPasswordEncoder.encode(pwd));
 

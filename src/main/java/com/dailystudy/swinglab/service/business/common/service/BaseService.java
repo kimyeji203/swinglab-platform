@@ -22,7 +22,7 @@ public class BaseService {
     {
         if (target == null || StringUtils.isBlank(target.toString()))
         {
-            throw new SwinglabBadRequestException(StringUtils.join("'",params,"'은(는) 값이 비어 있습니다."));
+            throw new SwinglabBadRequestException(StringUtils.join("'",params,"' 값이 비어 있습니다."));
         }
     }
 
@@ -30,7 +30,7 @@ public class BaseService {
     {
         if (ObjectUtils.isEmpty(target))
         {
-            throw new SwinglabBadRequestException(StringUtils.join("'",params,"'은(는) 값이 비어 있습니다."));
+            throw new SwinglabBadRequestException(StringUtils.join("'",params,"' 값이 비어 있습니다."));
         }
     }
 
@@ -38,7 +38,7 @@ public class BaseService {
     {
         if (target == null || target.isEmpty())
         {
-            throw new SwinglabBadRequestException(StringUtils.join("'",params,"'은(는) 값이 비어 있습니다."));
+            throw new SwinglabBadRequestException(StringUtils.join("'",params,"' 값이 비어 있습니다."));
         }
     }
 
@@ -46,7 +46,7 @@ public class BaseService {
     {
         if (target == null || target.length == 0)
         {
-            throw new SwinglabBadRequestException(StringUtils.join("'",params,"'은(는) 값이 비어 있습니다."));
+            throw new SwinglabBadRequestException(StringUtils.join("'",params,"' 값이 비어 있습니다."));
         }
     }
 
@@ -77,7 +77,7 @@ public class BaseService {
         List<Object> list = Arrays.asList(container);
         if (!list.contains(target))
         {
-            throw new SwinglabBadRequestException(StringUtils.join("'",params,"'은(는) 값이 비어 있습니다."));
+            throw new SwinglabBadRequestException(StringUtils.join("'",params,"' 값이 비어 있습니다."));
         }
     }
 

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @SpringBootTest
 class SwinglabServiceApplicationTests {
@@ -23,8 +23,8 @@ class SwinglabServiceApplicationTests {
 		user.setPwdChk("qhdks@00");
 		user.setDelYn(false);
 		user.setLoginId("test");
-		user.setSvcStDay(new Date());
-		user.setSvcEdDay(new Date());
+		user.setSvcStDay(LocalDate.now());
+		user.setSvcEdDay(LocalDate.now());
 		userRepository.save(user);
 	}
 

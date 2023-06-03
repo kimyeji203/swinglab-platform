@@ -3,11 +3,17 @@ package com.dailystudy.swinglab.service.framework.utils;
 /*
 */
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -1203,6 +1209,37 @@ public class DateUtil {
 		tcal.setTime(date);
 		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 		return formatter.format(tcal.getTime());
+	}
+
+	/**
+	 * 날자값을 지정된 패턴으로 출력한다.
+	 * @param date Date
+	 * @param pattern String
+	 * @return String
+	 */
+	public static String formatDate(LocalDate date, String pattern) {
+		return date.format(DateTimeFormatter.ofPattern(pattern));
+	}
+
+	/**
+	 * 날자값을 지정된 패턴으로 출력한다.
+	 * @param date Date
+	 * @param pattern String
+	 * @return String
+	 */
+	public static String formatDate(LocalDateTime date, String pattern) {
+		return date.format(DateTimeFormatter.ofPattern(pattern));
+	}
+
+
+	/**
+	 * 시간값을 지정된 패턴으로 출력한다.
+	 * @param time time
+	 * @param pattern String
+	 * @return String
+	 */
+	public static String formatDate(LocalTime time, String pattern) {
+		return time.format(DateTimeFormatter.ofPattern(pattern));
 	}
 
 	/**

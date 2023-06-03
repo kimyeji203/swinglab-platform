@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework.http.filter;
+package com.dailystudy.swinglab.service.framework.http.request.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

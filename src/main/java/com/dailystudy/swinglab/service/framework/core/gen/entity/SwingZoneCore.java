@@ -17,4 +17,5 @@ public class SwingZoneCore extends BaseEntity
     @Column(name = "ZONE_ID", nullable = false)
     private Long zoneId;
     @Column(name = "ZONE_NM", nullable = false)
-    private String zoneNm;}
+    private String zoneNm;
+}

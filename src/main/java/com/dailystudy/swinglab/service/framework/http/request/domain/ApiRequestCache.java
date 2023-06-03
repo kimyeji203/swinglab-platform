@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework.http.request;
+package com.dailystudy.swinglab.service.framework.http.request.domain;
 
 import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
 import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;

@@ -3,11 +3,13 @@ package com.dailystudy.swinglab.service.framework.core.gen.entity;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @MappedSuperclass // 테이블로 생성되지 않도록 해주는 어노테이션
@@ -22,6 +24,7 @@ public class UserCore extends BaseEntity
     private Long userId;
     @Column(name = "LOGIN_ID", nullable = false)
     private String loginId;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "PWD", nullable = false)
     private String pwd;
     @Column(name = "NAME", nullable = false)
@@ -30,13 +33,13 @@ public class UserCore extends BaseEntity
     private String nickNm;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SIGNUP_DT")
-    private Date signupDt;
+    private LocalDateTime signupDt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SVC_ST_DAY")
-    private Date svcStDay;
+    private LocalDate svcStDay;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SVC_ED_DAY")
-    private Date svcEdDay;
+    private LocalDate svcEdDay;
     @Column(name = "DEL_YN", nullable = false)
     private Boolean delYn;
 }

@@ -11,7 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
@@ -21,10 +21,10 @@ public class BaseEntity
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @CreatedDate
     @Column(name = "reg_dt")
-	private Date regDt;
+	private LocalDateTime regDt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @LastModifiedDate
     @Column(name = "upd_Dt")
-    private Date updDt;
+    private LocalDateTime updDt;
 }

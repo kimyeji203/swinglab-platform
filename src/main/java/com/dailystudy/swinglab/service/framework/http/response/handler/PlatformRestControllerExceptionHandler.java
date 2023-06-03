@@ -1,6 +1,7 @@
-package com.dailystudy.swinglab.service.framework.http.response;
+package com.dailystudy.swinglab.service.framework.http.response.handler;
 
 import com.dailystudy.swinglab.service.framework.http.request.HttpRequestThreadLocal;
+import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabHttpException;
 import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;

@@ -5,6 +5,7 @@ import com.dailystudy.swinglab.service.business.domain.JwtToken;
 import com.dailystudy.swinglab.service.business.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.repository.user.UserRepository;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,8 @@ public class JwtTokenProvider
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000l;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000l;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     @PostConstruct
     protected void init ()
@@ -63,7 +64,7 @@ public class JwtTokenProvider
         JwtToken result = new JwtToken();
         result.setAccessToken(accessToken);
         result.setRefreshToken(refreshToken);
-        result.setUserSid(user.getUserId());
+        result.setRefreshExpSec((int) REFRESH_TOKEN_EXPIRE_TIME / 1000);
         return result;
     }
 
@@ -93,8 +94,6 @@ public class JwtTokenProvider
 
         JwtToken result = new JwtToken();
         result.setAccessToken(accessToken);
-        result.setRefreshToken(token);
-        result.setUserSid(user.getUserId());
         return result;
     }
 

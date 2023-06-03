@@ -2,12 +2,12 @@ package com.dailystudy.swinglab.service.business.domain.entity.zone;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 public class BookDayInfo
 {
-    private Date bookDay;
+    private LocalDate bookDay;
     List<BookHist> bookList;
 }

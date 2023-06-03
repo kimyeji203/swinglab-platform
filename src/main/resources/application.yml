@@ -28,6 +28,7 @@ security:
   permitAll: >
     ${server.servlet.context-path}/v1/auth/login
     ,${server.servlet.context-path}/v1/auth/signup
+    ,${server.servlet.context-path}/v1/auth/login/refresh
     ,${server.servlet.context-path}/error
   ignoring: >
     /favicon.ico

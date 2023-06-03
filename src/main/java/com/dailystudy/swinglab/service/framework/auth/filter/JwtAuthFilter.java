@@ -3,6 +3,7 @@ package com.dailystudy.swinglab.service.framework.auth.filter;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
+import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import com.dailystudy.swinglab.service.framework.utils.StringUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter
         }
 
         //  SecurityContextHolder에 인증객체 세팅하기.
-        SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthenticationFromToken(loginId));
+        SecurityUtil.setAuthentication(jwtTokenProvider.getAuthenticationFromToken(loginId));
 
         filterChain.doFilter(request, response);
     }
