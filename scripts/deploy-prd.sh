@@ -7,7 +7,7 @@ TARGET_DIR=../build #/Volumes/INNER-YJKIM/채널AI/운영배포 # ==> change pat
 TODAY=$(date +"%Y%m%d")
 TODAY_TARGET_DIR=$TARGET_DIR/$TODAY
 DEV_USER=root
-DEV_DEPOLY_DIR=swinglab-was:/opt/swinglab-platform/upload/
+DEV_DEPOLY_DIR=13.125.190.65:/opt/swinglab-platform/upload/
 KEY=~/Desktop/project/01\ swinglab/swing-lab-key.pem
 
 if [ "$PJ" == "-h" ] || [ "$PJ" == "--help" ]; then

@@ -2,25 +2,26 @@ package com.dailystudy.swinglab.service.framework.http.response.handler;
 
 import com.dailystudy.swinglab.service.framework.http.request.HttpRequestThreadLocal;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
+import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabHttpException;
-import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * RestExceptionHandler is only applied for RestController exceptions.
@@ -37,18 +38,40 @@ public class PlatformRestControllerExceptionHandler
         log.error("Exception handler executed", exception);
 
         ErrorResponse errorResponse = new ErrorResponse();
-
         errorResponse.setErrorCode(Integer.toString(HttpStatus.INTERNAL_SERVER_ERROR.value()));
         errorResponse.setTitle(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
 
-        String message = "Internal Server Error" ; //exception.getMessage();
-        List<String> detailMessageList = new ArrayList<>();
-        detailMessageList.add(ExceptionUtils.getStackTrace(exception)); // TODO exceptionHandler : 개발 완료후 제거
-
+        String message = "Internal Server Error"; //exception.getMessage();
         errorResponse.setErrorMessage(message);
-        errorResponse.setDetails(detailMessageList);
 
         HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.INTERNAL_SERVER_ERROR, errorResponse);
+        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
+    /**
+     * 로그인 Exception Handler
+     *
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handlerAuthenticationException(AuthenticationException exception)
+    {
+        log.error("AuthenticationException handler executed", exception);
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setErrorCode(Integer.toString(HttpStatus.UNAUTHORIZED.value()));
+        errorResponse.setTitle(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+
+        String message = "로그인 실패 했습니다. 관리자에게 문의 바랍니다.";
+        if (BadCredentialsException.class.equals(exception.getClass()) //
+            || UsernameNotFoundException.class.equals(exception.getClass()))
+        {
+            message = "아이디 또는 비밀번호가 올바르지 않습니다.";
+        }
+        errorResponse.setErrorMessage(message);
+
+        HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.UNAUTHORIZED, errorResponse);
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
     }
 
@@ -79,11 +102,7 @@ public class PlatformRestControllerExceptionHandler
         {
             errorResponse.setTitle(exception.getTitle());
         }
-
         errorResponse.setErrorMessage(exception.getMessage());
-
-        List<String> detailMessageList = new ArrayList<>();
-        errorResponse.setDetails(detailMessageList);
 
         HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.valueOf(exception.getStatusCode().value()),
             errorResponse);
@@ -92,9 +111,9 @@ public class PlatformRestControllerExceptionHandler
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpServletRequest request,
-                                                                               HttpMessageNotReadableException exception)
+        HttpMessageNotReadableException exception)
     {
-        
+
         logRequestBody(request);
         log.error("HttpMessageNotReadableException handler executed", exception);
 
@@ -135,10 +154,9 @@ public class PlatformRestControllerExceptionHandler
     private void logRequestBody(HttpServletRequest request)
     {
         StringBuilder sb = new StringBuilder();
-        
-        sb.append("[METHOD] >>> ").append(request.getMethod())
-        .append(" [URI] >>> ").append(request.getRequestURI())
-        .append(" [PARAMS] >>> ").append(HttpRequestThreadLocal.getRestApiResponse().getRequestBody());
+
+        sb.append("[METHOD] >>> ").append(request.getMethod()).append(" [URI] >>> ").append(request.getRequestURI())
+            .append(" [PARAMS] >>> ").append(HttpRequestThreadLocal.getRestApiResponse().getRequestBody());
         log.error(sb.toString());
     }
 }

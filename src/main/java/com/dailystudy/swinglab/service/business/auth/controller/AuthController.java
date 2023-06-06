@@ -11,6 +11,7 @@ import com.dailystudy.swinglab.service.framework.http.uris.AuthUriConts;
 import com.dailystudy.swinglab.service.framework.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController
@@ -52,6 +54,7 @@ public class AuthController
     @PostMapping(AuthUriConts.POST_LOGIN)
     public ResponseEntity<SuccessResponse<JwtToken>> postLogin (@Valid @RequestBody User user, HttpServletResponse response)
     {
+        log.debug("[LOGIN] loginId : {} / encode pwd : {} / decode pwd : {}", user.getLoginId(), user.getPwd(), new String(Base64.decodeBase64(user.getPwd())));
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getLoginId(), new String(Base64.decodeBase64(user.getPwd())));
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

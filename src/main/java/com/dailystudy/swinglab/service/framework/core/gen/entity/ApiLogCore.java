@@ -40,6 +40,6 @@ public class ApiLogCore extends BaseEntity
     @Column(name = "res_body")
     private String resBody;
     @Column(name = "res_body_len")
-    private Integer resBodyLen;
+    private Long resBodyLen;
 
 }

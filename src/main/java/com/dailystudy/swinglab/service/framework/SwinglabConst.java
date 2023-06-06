@@ -10,4 +10,5 @@ public class SwinglabConst
     public static final String DT_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String TIME_FORMAT = "HH:mm";
     public static final String UTF8 = "UTF-8";
+    public static final String TXID = "TXID";
 }
