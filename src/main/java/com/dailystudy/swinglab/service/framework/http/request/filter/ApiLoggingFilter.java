@@ -1,7 +1,7 @@
 package com.dailystudy.swinglab.service.framework.http.request.filter;
 
-import com.dailystudy.swinglab.service.business.domain.entity.common.ApiLog;
-import com.dailystudy.swinglab.service.business.repository.common.ApiLogRepository;
+import com.dailystudy.swinglab.service.business.common.domain.entity.common.ApiLog;
+import com.dailystudy.swinglab.service.business.common.repository.common.ApiLogRepository;
 import com.dailystudy.swinglab.service.framework.http.request.HttpRequestThreadLocal;
 import com.dailystudy.swinglab.service.framework.http.request.domain.ApiRequestCache;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
@@ -13,20 +13,24 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * api 이력 filter
@@ -34,20 +38,19 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
  * @author yjkim
  */
 @Slf4j
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
 public class ApiLoggingFilter extends GenericFilterBean
 {
-    @Value("${process.name}")
-    private String processName;
-
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
     private final ApiLogRepository apiLogRepository;
 
-    private static final List<String> SKIP_API = Arrays.asList("/api/history", "/api/history/*", "/actuator/health");// ,"/login*","/logout*","/signup*");
+    private static final List<String> SKIP_API = Arrays.asList();
 
-    private boolean isSkip(String uri)
+    private boolean isSkip (String uri)
     {
         AntPathMatcher pathMatcher = new AntPathMatcher();
         for (String pattern : SKIP_API)
@@ -62,8 +65,8 @@ public class ApiLoggingFilter extends GenericFilterBean
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException
+    public void doFilter (ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException
     {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String requestUri = httpServletRequest.getRequestURI(); // URI
@@ -78,15 +81,15 @@ public class ApiLoggingFilter extends GenericFilterBean
 
     /**
      * filter chain 실행시 api 호출 이력을 Logging 하여 준다.
-     * 
+     *
      * @param request
      * @param response
      * @param chain
      * @throws IOException
      * @throws ServletException
      */
-    private void logApi(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException
+    private void logApi (ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException
     {
 
         log.debug("ApiLoggingFilter doFilter executed.");
@@ -118,13 +121,13 @@ public class ApiLoggingFilter extends GenericFilterBean
             HttpServletRequest servletRequest = ((HttpServletRequest) request);
             String method = servletRequest.getMethod(); // 요청 메소드
             String reqBody = restApiResponse.getRequestBody(); // 요청 바디
-            String respBody = restApiResponse.getResponseBody();
+            String resBody = restApiResponse.getResponseBody();
             String clientIp = servletRequest.getHeader("x-client-ip"); // 요청한 서버의 ip
             if (StringUtils.isEmpty(clientIp))
             {
                 clientIp = request.getRemoteAddr();
             }
-            
+
             long contentLength = 0;
             if (response instanceof ContentCachingResponseWrapper)
             {
@@ -132,22 +135,24 @@ public class ApiLoggingFilter extends GenericFilterBean
             } else
             {
                 String cl = ((HttpServletResponse) response).getHeader("Content-Length");
-                contentLength = NumberUtils.toLong(cl, -1);
+                contentLength = NumberUtils.toLong(cl, 0);
             }
-            
+
             ApiLog apiLog = new ApiLog();
-            apiLog.setResDt(start);
+            apiLog.setReqDt(start);
+            apiLog.setResDt(new Date());
             apiLog.setTxId(transactionId);
             apiLog.setClintIp(clientIp);
-            apiLog.setApi(StringUtils.join("[",method,"] ",requestUri));
+            apiLog.setApi(StringUtils.join("[", method, "] ", requestUri));
             apiLog.setReqBody(reqBody);
             apiLog.setResBodyLen(contentLength);
 
             if (ObjectUtils.isEmpty(httpSttus) || httpSttus == PlatformHttpStatus.OK)
             {
                 apiLog.setHttpSttusCd(HttpStatus.OK.value());
+                apiLog.setResCd(String.valueOf(HttpStatus.OK.value()));
                 apiLog.setResYn(true);
-                apiLog.setResBody(respBody);
+                apiLog.setResBody(resBody);
             } else
             {
                 apiLog.setHttpSttusCd(httpSttus.value());
@@ -169,7 +174,7 @@ public class ApiLoggingFilter extends GenericFilterBean
             apiLogRepository.save(apiLog);
         } catch (Exception ex)
         {
-            logger.warn(ex.getMessage(), ex);
+            log.warn(ex.getMessage(), ex);
         }
     }
 }
