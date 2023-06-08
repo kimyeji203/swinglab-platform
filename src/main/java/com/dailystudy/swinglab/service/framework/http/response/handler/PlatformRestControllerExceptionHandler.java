@@ -5,16 +5,13 @@ import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatu
 import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabHttpException;
+import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * RestExceptionHandler is only applied for RestController exceptions.
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class PlatformRestControllerExceptionHandler
 {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception exception)
+    public ResponseEntity<ErrorResponse> handleException (Exception exception)
     {
         log.error("Exception handler executed", exception);
 
@@ -55,7 +55,7 @@ public class PlatformRestControllerExceptionHandler
      * @return
      */
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponse> handlerAuthenticationException(AuthenticationException exception)
+    public ResponseEntity<ErrorResponse> handlerAuthenticationException (AuthenticationException exception)
     {
         log.error("AuthenticationException handler executed", exception);
 
@@ -65,14 +65,35 @@ public class PlatformRestControllerExceptionHandler
 
         String message = "로그인 실패 했습니다. 관리자에게 문의 바랍니다.";
         if (BadCredentialsException.class.equals(exception.getClass()) //
-            || UsernameNotFoundException.class.equals(exception.getClass()))
+                || UsernameNotFoundException.class.equals(exception.getClass()))
         {
             message = "아이디 또는 비밀번호가 올바르지 않습니다.";
         }
         errorResponse.setErrorMessage(message);
 
         HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.UNAUTHORIZED, errorResponse);
-        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * [Swinglab] com.innerwave.Swinglab.core.exception.http.SwinglabUnauthorizedException.class
+     *
+     * @param exception
+     * @return
+     */
+    @ExceptionHandler(SwinglabUnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException (SwinglabUnauthorizedException exception)
+    {
+        log.error("[Swinglab] SwinglabUnauthorizedException handler executed", exception);
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setErrorCode(StringUtils.isNotEmpty(exception.getErrorCode()) ? exception.getErrorCode() : String.valueOf(exception.getStatusCode().value()));
+        errorResponse.setTitle(StringUtils.isEmpty(exception.getTitle()) ? exception.getStatusCode().getReasonPhrase() : exception.getTitle());
+        errorResponse.setErrorMessage(exception.getMessage());
+
+        HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.valueOf(exception.getStatusCode().value()),
+                errorResponse);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -82,36 +103,23 @@ public class PlatformRestControllerExceptionHandler
      * @return
      */
     @ExceptionHandler(SwinglabHttpException.class)
-    public ResponseEntity<ErrorResponse> handleHttpException(SwinglabHttpException exception)
+    public ResponseEntity<ErrorResponse> handleHttpException (SwinglabHttpException exception)
     {
         log.error("[Swinglab] SwinglabHttpException handler executed", exception);
 
         ErrorResponse errorResponse = new ErrorResponse();
-        if (StringUtils.isNotEmpty(exception.getErrorCode()))
-        {
-            errorResponse.setErrorCode(exception.getErrorCode());
-        } else
-        {
-            errorResponse.setErrorCode(String.valueOf(exception.getStatusCode().value()));
-        }
-
-        if (StringUtils.isEmpty(exception.getTitle()))
-        {
-            errorResponse.setTitle(exception.getStatusCode().getReasonPhrase());
-        } else
-        {
-            errorResponse.setTitle(exception.getTitle());
-        }
+        errorResponse.setErrorCode(StringUtils.isNotEmpty(exception.getErrorCode()) ? exception.getErrorCode() : String.valueOf(exception.getStatusCode().value()));
+        errorResponse.setTitle(StringUtils.isEmpty(exception.getTitle()) ? exception.getStatusCode().getReasonPhrase() : exception.getTitle());
         errorResponse.setErrorMessage(exception.getMessage());
 
         HttpRequestThreadLocal.setRestApiResponse(PlatformHttpStatus.valueOf(exception.getStatusCode().value()),
-            errorResponse);
+                errorResponse);
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpServletRequest request,
-        HttpMessageNotReadableException exception)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException (HttpServletRequest request,
+                                                                                HttpMessageNotReadableException exception)
     {
 
         logRequestBody(request);
@@ -132,8 +140,8 @@ public class PlatformRestControllerExceptionHandler
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(HttpServletRequest request,
-        MethodArgumentNotValidException exception)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException (HttpServletRequest request,
+                                                                                MethodArgumentNotValidException exception)
     {
         logRequestBody(request);
         BindingResult bindingResult = exception.getBindingResult();
@@ -141,7 +149,7 @@ public class PlatformRestControllerExceptionHandler
         {
             String message = "Invalid Parameters";
             List<String> details = bindingResult.getAllErrors().stream().map(error -> error.getDefaultMessage())
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
 
             SwinglabBadRequestException badRequestException = new SwinglabBadRequestException(message, details);
             return handleHttpException(badRequestException);
@@ -151,12 +159,12 @@ public class PlatformRestControllerExceptionHandler
         return handleException(exception);
     }
 
-    private void logRequestBody(HttpServletRequest request)
+    private void logRequestBody (HttpServletRequest request)
     {
         StringBuilder sb = new StringBuilder();
 
         sb.append("[METHOD] >>> ").append(request.getMethod()).append(" [URI] >>> ").append(request.getRequestURI())
-            .append(" [PARAMS] >>> ").append(HttpRequestThreadLocal.getRestApiResponse().getRequestBody());
+                .append(" [PARAMS] >>> ").append(HttpRequestThreadLocal.getRestApiResponse().getRequestBody());
         log.error(sb.toString());
     }
 }

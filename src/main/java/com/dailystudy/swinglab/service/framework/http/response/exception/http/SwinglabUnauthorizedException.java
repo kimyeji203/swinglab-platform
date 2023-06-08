@@ -29,6 +29,12 @@ public class SwinglabUnauthorizedException extends SwinglabHttpException
         setTitle(title);
     }
 
+    public SwinglabUnauthorizedException(String title, String message)
+    {
+        super(PlatformHttpStatus.UNAUTHORIZED, message);
+        setTitle(title);
+    }
+
     public SwinglabUnauthorizedException(String message)
     {
         super(PlatformHttpStatus.UNAUTHORIZED, message);

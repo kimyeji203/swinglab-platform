@@ -30,7 +30,7 @@ public class JwtAuthExceptionFilter extends OncePerRequestFilter
             errorResponse.setErrorCode(String.valueOf(e.getStatusCode().value()));
             errorResponse.setErrorMessage(e.getMessage());
 
-            response.setStatus(HttpStatus.OK.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setCharacterEncoding(SwinglabConst.UTF8);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(JsonUtil.parseJsonObject(errorResponse));
