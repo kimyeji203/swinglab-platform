@@ -47,10 +47,11 @@ public class JwtAuthFilter extends OncePerRequestFilter
 
         // 3. Token 확인
         String token = jwtTokenProvider.getTokenFromHeader(header);
-        if (!jwtTokenProvider.isValidToken(token))
+        SwinglabConst.JWT_EXCEPT jwtExcept = jwtTokenProvider.isValidToken(token);
+        if (jwtExcept != null)
         {
-            log.error("{} : invalided token", request.getRequestURI());
-            throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");
+            log.error("{} : invalided token : {}", request.getRequestURI(), jwtExcept);
+            throw new SwinglabUnauthorizedException(jwtExcept.getTitle(), jwtExcept.getErrorMessage());
         }
 
         // 4. 로그인아이디 확인

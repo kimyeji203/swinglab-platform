@@ -1,5 +1,7 @@
 package com.dailystudy.swinglab.service.framework;
 
+import lombok.Getter;
+
 public class SwinglabConst
 {
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -21,4 +23,24 @@ public class SwinglabConst
     public static final String USER_ID = "userId";
     public static final String LOGIN_ID = "loginId";
     public static final String USER_NM = "userNm";
+
+    @Getter
+    public enum JWT_EXCEPT
+    {
+        EXPIRED("TokenExpiredError", "만료된 토큰입니다."),
+        TAMPERED("TokenTamperedError", "위/변조된 토큰입니다."),
+        NULL("TokenIsNullError", "유효하지 않은 토큰입니다.")
+        ;
+
+        private String title;
+        private String errorMessage;
+
+        JWT_EXCEPT(String title, String errorMessage)
+        {
+            this.title = title;
+            this.errorMessage = errorMessage;
+        }
+
+
+    }
 }

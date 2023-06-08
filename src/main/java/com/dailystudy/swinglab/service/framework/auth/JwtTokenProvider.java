@@ -5,6 +5,7 @@ import com.dailystudy.swinglab.service.business.common.domain.JwtToken;
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -75,11 +76,11 @@ public class JwtTokenProvider
      */
     public JwtToken refreshAccessToken (String token)
     {
-        boolean isValidToken = this.isValidToken(token);
-        if (!isValidToken)
+        SwinglabConst.JWT_EXCEPT jwtExcept = this.isValidToken(token);
+        if (jwtExcept != null)
         {
-            log.error("The refreshToken is invalid");
-            return null;
+            log.error("The refreshToken is invalid : {}", jwtExcept);
+            throw new SwinglabUnauthorizedException(jwtExcept.getTitle(), jwtExcept.getErrorMessage());
         }
 
         String loginId = this.getLoginIdFromToken(token);
@@ -212,7 +213,7 @@ public class JwtTokenProvider
      * @param token
      * @return
      */
-    public boolean isValidToken (String token)
+    public SwinglabConst.JWT_EXCEPT isValidToken (String token)
     {
         try
         {
@@ -223,19 +224,19 @@ public class JwtTokenProvider
             log.info("loginId :" + claims.get(SwinglabConst.LOGIN_ID));
             log.info("userNm :" + claims.get(SwinglabConst.USER_NM));
 
-            return true;
+            return null;
         } catch (ExpiredJwtException exception)
         {
             log.error("Token Expired");
-            return false;
+            return SwinglabConst.JWT_EXCEPT.EXPIRED;
         } catch (JwtException exception)
         {
             log.error("Token Tampered");
-            return false;
+            return SwinglabConst.JWT_EXCEPT.TAMPERED;
         } catch (NullPointerException exception)
         {
             log.error("Token is null");
-            return false;
+            return SwinglabConst.JWT_EXCEPT.NULL;
         }
     }
 
