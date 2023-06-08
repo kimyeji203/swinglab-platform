@@ -28,6 +28,7 @@ public class JwtAuthExceptionFilter extends OncePerRequestFilter
         {
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.setErrorCode(String.valueOf(e.getStatusCode().value()));
+            errorResponse.setTitle(e.getTitle());
             errorResponse.setErrorMessage(e.getMessage());
 
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
