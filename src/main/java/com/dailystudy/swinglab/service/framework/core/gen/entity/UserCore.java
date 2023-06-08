@@ -5,16 +5,17 @@ import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+@Data
 @MappedSuperclass // 테이블로 생성되지 않도록 해주는 어노테이션
 @EntityListeners(value = {AuditingEntityListener.class}) // AuditingEntityListener : JPA 내부에서 엔티티 객체가 생성/변경 되는것을 감지하는 역할
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class UserCore extends BaseEntity
 {

@@ -173,6 +173,7 @@ public class ApiLoggingFilter extends GenericFilterBean
             }
 
             // API 이력 DB 저장
+            apiLog.setReqDt(new Date());
             apiLogRepository.save(apiLog);
         } catch (Exception ex)
         {

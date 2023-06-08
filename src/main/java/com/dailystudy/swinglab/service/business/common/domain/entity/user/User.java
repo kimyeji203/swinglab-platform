@@ -7,12 +7,13 @@ import lombok.*;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.DynamicUpdate;
 
-
-@Entity
-@Table(name="tb_user")
 @Data
+@Entity
+@DynamicUpdate
 @NoArgsConstructor
+@Table(name="tb_user")
 @EqualsAndHashCode(callSuper = true)
 public class User extends UserCore
 {
