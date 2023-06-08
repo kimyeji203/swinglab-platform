@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.business.domain;
+package com.dailystudy.swinglab.service.business.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

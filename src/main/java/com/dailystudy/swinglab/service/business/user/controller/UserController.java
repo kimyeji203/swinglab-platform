@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.business.user.controller;
 
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.user.service.UserService;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;

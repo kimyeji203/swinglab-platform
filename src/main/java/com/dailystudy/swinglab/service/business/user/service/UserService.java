@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.user.service;
 
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
-import com.dailystudy.swinglab.service.business.repository.user.UserRepository;
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
+import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;

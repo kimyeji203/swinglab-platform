@@ -34,10 +34,10 @@ public class UserCore extends BaseEntity
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SIGNUP_DT")
     private LocalDateTime signupDt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SVC_ST_DAY")
     private LocalDate svcStDay;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SVC_ED_DAY")
     private LocalDate svcEdDay;
     @Column(name = "DEL_YN", nullable = false)

@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.business.domain.entity.zone;
+package com.dailystudy.swinglab.service.business.common.domain.entity.zone;
 
 import com.dailystudy.swinglab.service.framework.core.gen.entity.UsageHistCore;
 import lombok.*;

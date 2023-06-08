@@ -1,20 +1,17 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.domain.entity.zone.BookDayInfo;
-import com.dailystudy.swinglab.service.business.domain.entity.zone.BookHist;
-import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
-import com.dailystudy.swinglab.service.business.repository.zone.BookHistRepository;
-import com.dailystudy.swinglab.service.business.repository.zone.SwingZoneRepository;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.BookHist;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
 import java.util.List;
 
 @Slf4j

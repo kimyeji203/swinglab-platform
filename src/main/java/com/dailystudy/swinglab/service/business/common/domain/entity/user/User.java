@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.business.domain.entity.user;
+package com.dailystudy.swinglab.service.business.common.domain.entity.user;
 
 import com.dailystudy.swinglab.service.framework.core.gen.entity.UserCore;
 import com.fasterxml.jackson.annotation.JsonProperty;

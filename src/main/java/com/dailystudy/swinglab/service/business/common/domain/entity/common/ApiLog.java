@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.business.domain.entity.common;
+package com.dailystudy.swinglab.service.business.common.domain.entity.common;
 
 import com.dailystudy.swinglab.service.framework.core.gen.entity.ApiLogCore;
 import jakarta.persistence.Entity;

@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.auth.controller;
 
 import com.dailystudy.swinglab.service.business.auth.service.AuthService;
-import com.dailystudy.swinglab.service.business.domain.JwtToken;
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
+import com.dailystudy.swinglab.service.business.common.domain.JwtToken;
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;

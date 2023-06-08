@@ -1,10 +1,8 @@
-package com.dailystudy.swinglab.service.business.repository.user;
+package com.dailystudy.swinglab.service.business.common.repository.user;
 
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
-import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>
 {

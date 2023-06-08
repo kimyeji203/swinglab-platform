@@ -1,26 +1,23 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.domain.entity.zone.BookHist;
-import com.dailystudy.swinglab.service.business.domain.entity.zone.SwingZone;
-import com.dailystudy.swinglab.service.business.repository.zone.BookHistRepository;
-import com.dailystudy.swinglab.service.business.repository.zone.SwingZoneRepository;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.BookHist;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
 import com.dailystudy.swinglab.service.framework.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 

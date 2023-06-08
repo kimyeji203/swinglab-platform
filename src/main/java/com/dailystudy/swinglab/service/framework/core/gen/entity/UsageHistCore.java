@@ -1,6 +1,8 @@
 package com.dailystudy.swinglab.service.framework.core.gen.entity;
 
+import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,8 +22,10 @@ public class UsageHistCore extends BaseEntity
     @Id
     @Column(name = "BOOK_ID", nullable = false)
     private Long bookId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT)
     @Column(name = "CHK_IN_DT")
     private LocalDateTime chkInDt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT)
     @Column(name = "CHK_OUT_DT")
     private LocalDateTime chkOutDt;
     @Column(name = "AUTO_CHK_OUT_YN")

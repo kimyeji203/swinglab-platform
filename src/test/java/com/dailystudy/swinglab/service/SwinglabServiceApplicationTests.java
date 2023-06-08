@@ -1,8 +1,7 @@
 package com.dailystudy.swinglab.service;
 
-import com.dailystudy.swinglab.service.business.domain.entity.user.User;
-import com.dailystudy.swinglab.service.business.repository.user.UserRepository;
-import org.junit.jupiter.api.Test;
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
+import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
