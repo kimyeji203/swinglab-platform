@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.dailystudy.swinglab.service.framework.SwinglabConst.ACCESS_TOKEN_EXPIRE_TIME;
+import static com.dailystudy.swinglab.service.framework.SwinglabConst.REFRESH_TOKEN_EXPIRE_TIME;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -35,9 +38,6 @@ public class JwtTokenProvider
 
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
-
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
 
     @PostConstruct
     protected void init ()
@@ -84,16 +84,7 @@ public class JwtTokenProvider
 
         String loginId = this.getLoginIdFromToken(token);
         User user = userRepository.findByLoginIdAndDelYnFalse(loginId);
-
-        long todayTime = new Date().getTime();
-        Map<String, Object> header = this.createHeader();
-        Map<String, Object> claims = this.createClaims(user);
-
-        String accessToken = generateToken(header, claims, user.getUserId(), new Date(todayTime + ACCESS_TOKEN_EXPIRE_TIME));
-
-        JwtToken result = new JwtToken();
-        result.setAccessToken(accessToken);
-        return result;
+        return this.generateJwtToken(user);
     }
 
     /**
@@ -107,7 +98,6 @@ public class JwtTokenProvider
 
         header.put("typ", "JWT");
         header.put("alg", "HS256");
-        header.put("regDate", System.currentTimeMillis());
         return header;
     }
 
@@ -125,9 +115,9 @@ public class JwtTokenProvider
         log.info("loginId :" + user.getLoginId());
         log.info("userNm :" + user.getName());
 
-        claims.put("userId", user.getUserId());
-        claims.put("loginId", user.getLoginId());
-        claims.put("userNm", user.getName());
+        claims.put(SwinglabConst.USER_ID, user.getUserId());
+        claims.put(SwinglabConst.LOGIN_ID, user.getLoginId());
+        claims.put(SwinglabConst.USER_NM, user.getName());
         return claims;
     }
 
@@ -201,7 +191,7 @@ public class JwtTokenProvider
     public String getLoginIdFromToken (String token)
     {
         Claims claims = getClaimsFormToken(token);
-        return claims.get("loginId").toString();
+        return claims.get(SwinglabConst.LOGIN_ID).toString();
     }
 
     /**
@@ -213,7 +203,7 @@ public class JwtTokenProvider
     public String getUserIdFromToken (String token)
     {
         Claims claims = getClaimsFormToken(token);
-        return claims.get("userId").toString();
+        return claims.get(SwinglabConst.USER_ID).toString();
     }
 
     /**
@@ -229,9 +219,9 @@ public class JwtTokenProvider
             Claims claims = getClaimsFormToken(token);
 
             log.info("expireTime :" + claims.getExpiration());
-            log.info("userId :" + claims.get("userId"));
-            log.info("loginId :" + claims.get("loginId"));
-            log.info("userNm :" + claims.get("userNm"));
+            log.info("userId :" + claims.get(SwinglabConst.USER_ID));
+            log.info("loginId :" + claims.get(SwinglabConst.LOGIN_ID));
+            log.info("userNm :" + claims.get(SwinglabConst.USER_NM));
 
             return true;
         } catch (ExpiredJwtException exception)

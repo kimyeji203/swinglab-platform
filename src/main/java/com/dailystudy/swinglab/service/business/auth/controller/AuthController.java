@@ -61,7 +61,7 @@ public class AuthController
 
         JwtToken result = jwtTokenProvider.generateJwtToken(user);
         response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", result.getAccessToken()));
-        CookieUtil.addCookie(response, SwinglabConst.COOKIE_REFRESH_TOKEN_KEY, result.getRefreshToken(), result.getRefreshExpSec());
+//        CookieUtil.addCookie(response, SwinglabConst.COOKIE_REFRESH_TOKEN_KEY, result.getRefreshToken(), result.getRefreshExpSec());
         return PlatformResponseBuilder.build(result);
     }
 
@@ -72,10 +72,10 @@ public class AuthController
      * @param response
      * @return
      */
-    @GetMapping(AuthUriConts.GET_LOGIN_REFRESH)
-    public ResponseEntity<SuccessResponse<JwtToken>> postLoginRefreshToken (@CookieValue(SwinglabConst.COOKIE_REFRESH_TOKEN_KEY) String token, HttpServletResponse response)
+    @PostMapping(AuthUriConts.GET_LOGIN_REFRESH)
+    public ResponseEntity<SuccessResponse<JwtToken>> postLoginRefreshToken (@RequestBody JwtToken token, HttpServletResponse response)
     {
-        JwtToken result = jwtTokenProvider.refreshAccessToken(token);
+        JwtToken result = jwtTokenProvider.refreshAccessToken(token.getRefreshToken());
         response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", result.getAccessToken()));
         return PlatformResponseBuilder.build(result);
     }

@@ -109,9 +109,7 @@ public class ApiLoggingFilter extends GenericFilterBean
         }
 
         Long elapsedTimeMillis = System.currentTimeMillis() - start.getTime();
-
         ApiRequestCache restApiResponse = HttpRequestThreadLocal.getRestApiResponse();
-
         PlatformHttpStatus httpSttus = restApiResponse.getHttpSttus();
         ErrorResponse errorResponse = restApiResponse.getErrorResponse();
         HttpRequestThreadLocal.remove();
@@ -120,6 +118,10 @@ public class ApiLoggingFilter extends GenericFilterBean
         {
             HttpServletRequest servletRequest = ((HttpServletRequest) request);
             String method = servletRequest.getMethod(); // 요청 메소드
+            if (method.equalsIgnoreCase("get") || method.equalsIgnoreCase("delete"))
+            {
+                requestUri = StringUtils.join(requestUri, "?", httpServletRequest.getQueryString());
+            }
             String reqBody = restApiResponse.getRequestBody(); // 요청 바디
             String resBody = restApiResponse.getResponseBody();
             String clientIp = servletRequest.getHeader("x-client-ip"); // 요청한 서버의 ip
