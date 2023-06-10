@@ -1,10 +1,10 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
-import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
+import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -67,9 +67,8 @@ public class ZoneService extends BaseService
         // 유효성 검사
         assertNotEmpty(bookHist, "예약정보");
         assertNotEmpty(zoneId, "타석 ID");
-        assertNotEmpty(bookHist.getBookStDay(), "예약일");
-        assertNotEmpty(bookHist.getBookStTime(), "예약 시간(시작)");
-        assertNotEmpty(bookHist.getBookEdTime(), "예약 시간(종료)");
+        assertNotEmpty(bookHist.getBookStDt(), "예약 시간(시작)");
+        assertNotEmpty(bookHist.getBookEdDt(), "예약 시간(종료)");
 
         // 존재하는 타석인지 확인
         zoneValidService.getValidZone(zoneId);
@@ -81,6 +80,7 @@ public class ZoneService extends BaseService
         bookHist.setUserId(userSid);
         bookHist.setZoneId(zoneId);
         bookHist.setBookCnclYn(false);
+        bookHist.setAutoBookCnclYn(false);
         return zoneBookHistRepository.save(bookHist);
     }
 
@@ -97,9 +97,8 @@ public class ZoneService extends BaseService
             // 유효성 검사
             assertNotEmpty(bookHist, "예약정보");
             assertNotEmpty(zoneId, "타석 ID");
-            assertNotEmpty(bookHist.getBookStDay(), "예약일");
-            assertNotEmpty(bookHist.getBookStTime(), "예약 시간(시작)");
-            assertNotEmpty(bookHist.getBookEdTime(), "예약 시간(종료)");
+            assertNotEmpty(bookHist.getBookStDt(), "예약 시간(시작)");
+            assertNotEmpty(bookHist.getBookEdDt(), "예약 시간(종료)");
 
             // 존재하는 타석인지 확인
             zoneValidService.getValidZone(zoneId);

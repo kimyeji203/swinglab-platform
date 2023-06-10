@@ -33,6 +33,7 @@ security:
     ,${server.servlet.context-path}/v1/auth/signup
     ,${server.servlet.context-path}/v1/auth/login/refresh
     ,${server.servlet.context-path}/error
+    , ${server.servlet.context-path}/test/**
   ignoring: >
     /favicon.ico
 

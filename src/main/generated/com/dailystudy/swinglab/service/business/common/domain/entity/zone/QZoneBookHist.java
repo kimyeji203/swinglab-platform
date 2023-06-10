@@ -22,22 +22,19 @@ public class QZoneBookHist extends EntityPathBase<ZoneBookHist> {
     public final com.dailystudy.swinglab.service.framework.core.gen.entity.QZoneBookHistCore _super = new com.dailystudy.swinglab.service.framework.core.gen.entity.QZoneBookHistCore(this);
 
     //inherited
+    public final BooleanPath autoBookCnclYn = _super.autoBookCnclYn;
+
+    //inherited
     public final BooleanPath bookCnclYn = _super.bookCnclYn;
 
     //inherited
-    public final DatePath<java.time.LocalDate> bookEdDay = _super.bookEdDay;
-
-    //inherited
-    public final TimePath<java.time.LocalTime> bookEdTime = _super.bookEdTime;
+    public final DateTimePath<java.time.LocalDateTime> bookEdDt = _super.bookEdDt;
 
     //inherited
     public final NumberPath<Long> bookId = _super.bookId;
 
     //inherited
-    public final DatePath<java.time.LocalDate> bookStDay = _super.bookStDay;
-
-    //inherited
-    public final TimePath<java.time.LocalTime> bookStTime = _super.bookStTime;
+    public final DateTimePath<java.time.LocalDateTime> bookStDt = _super.bookStDt;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> regDt = _super.regDt;

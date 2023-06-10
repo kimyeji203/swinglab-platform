@@ -2,16 +2,16 @@ package com.dailystudy.swinglab.service.framework.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Configuration
 @EnableJpaAuditing
-public class QueryDslConfig
+public class QuerydslConfig
 {
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Bean

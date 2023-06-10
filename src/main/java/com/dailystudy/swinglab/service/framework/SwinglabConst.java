@@ -14,6 +14,8 @@ public class SwinglabConst
     public static final String UTF8 = "UTF-8";
     public static final String TXID = "TXID";
 
+    public static final Integer DF_MIN = 15;
+
     /*
      * 토큰
      */

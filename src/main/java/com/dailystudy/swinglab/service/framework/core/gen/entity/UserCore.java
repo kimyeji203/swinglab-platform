@@ -3,13 +3,13 @@ package com.dailystudy.swinglab.service.framework.core.gen.entity;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -35,6 +35,7 @@ public class UserCore extends BaseEntity
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SIGNUP_DT")
     private LocalDateTime signupDt;
+    @JsonIgnore
     @Column(name = "DEL_YN", nullable = false)
     private Boolean delYn;
 }

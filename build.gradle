@@ -82,7 +82,9 @@ configurations {
 	}
 	querydsl.extendsFrom compileClasspath
 }
-
+compileJava {
+	options.compilerArgs << '-Aquerydsl.generatedAnnotationClass=javax.annotation.Generated'
+}
 tasks.withType(JavaCompile) {
 	options.generatedSourceOutputDirectory = file(querydslDir)
 }
