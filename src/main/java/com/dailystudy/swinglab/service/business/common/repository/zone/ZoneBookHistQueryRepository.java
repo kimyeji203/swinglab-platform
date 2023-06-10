@@ -17,13 +17,14 @@ public class ZoneBookHistQueryRepository
 {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<ZoneBookHist> findAllByZoneIdAndBookStDt (Long zoneId, LocalDateTime bookStDay)
+    public List<ZoneBookHist> findAllByZoneIdAndBookDt (Long zoneId, LocalDateTime bookStDt, LocalDateTime bookEdDt)
     {
         return jpaQueryFactory
                 .selectFrom(zoneBookHist)
                 .where(zoneBookHist.zoneId.eq(zoneId)
                         , zoneBookHist.bookCnclYn.isFalse()
-                        , zoneBookHist.bookStDt.eq(bookStDay)
+                        , zoneBookHist.bookEdDt.goe(bookStDt)
+                        , zoneBookHist.bookStDt.loe(bookEdDt)
                 ).fetch();
     }
 

@@ -73,7 +73,7 @@ public class ZoneValidService extends BaseService
          * 예약이 곂치는지 확인
          */
         // 예약 이력 조회
-        List<ZoneBookHist> bookHistList = zoneBookHistQueryRepository.findAllByZoneIdAndBookStDt(zoneId, bookHist.getBookStDt());
+        List<ZoneBookHist> bookHistList = zoneBookHistQueryRepository.findAllByZoneIdAndBookDt(zoneId, bookHist.getBookStDt(),bookHist.getBookEdDt());
         if (bookHistList.isEmpty())
         {
             return;
