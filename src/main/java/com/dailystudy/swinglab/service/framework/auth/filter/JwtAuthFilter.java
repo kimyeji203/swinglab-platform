@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter
     private List<String> permitAllUris;
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
@@ -59,6 +61,14 @@ public class JwtAuthFilter extends OncePerRequestFilter
         if (StringUtil.isEmptyString(loginId))
         {
             log.error("{} : loginId in token is empty", request.getRequestURI());
+            throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");
+        }
+
+        // 5. 로그아웃 확인
+        String isLogout = (String) redisTemplate.opsForValue().get(token);
+        if(StringUtil.isNotEmptyString(isLogout))
+        {
+            log.error("{} : it is logout token.", request.getRequestURI());
             throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");
         }
 

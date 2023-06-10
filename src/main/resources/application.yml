@@ -17,12 +17,15 @@ spring:
           lob:
             non_contextual_creation: false
         show_sql: false
-
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://13.125.190.65:5432/swinglab?currentSchema=public&useSSL=false&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&stringtype=unspecified
     username: swinglab
     password: qhdks@00
+  data:
+    redis:
+      host: 13.125.190.65
+      port: 6379
 
 security:
   jwt:

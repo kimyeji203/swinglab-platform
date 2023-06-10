@@ -8,12 +8,13 @@ import com.dailystudy.swinglab.service.framework.auth.JwtTokenProvider;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
 import com.dailystudy.swinglab.service.framework.http.uris.AuthUriConts;
-import com.dailystudy.swinglab.service.framework.utils.CookieUtil;
+import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.utils.Base64;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -30,7 +32,9 @@ public class AuthController
 {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
+
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 회원가입
@@ -61,7 +65,15 @@ public class AuthController
 
         JwtToken result = jwtTokenProvider.generateJwtToken(user);
         response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", result.getAccessToken()));
-//        CookieUtil.addCookie(response, SwinglabConst.COOKIE_REFRESH_TOKEN_KEY, result.getRefreshToken(), result.getRefreshExpSec());
+        //        CookieUtil.addCookie(response, SwinglabConst.COOKIE_REFRESH_TOKEN_KEY, result.getRefreshToken(), result.getRefreshExpSec());
+
+        // redis에 리프레시 토큰 저장
+        redisTemplate.opsForValue().set("RT:" + SecurityUtil.getUserId(),
+                result.getRefreshToken(),
+                jwtTokenProvider.getExpirationFromToken(result.getRefreshToken()),
+                TimeUnit.MILLISECONDS
+        );
+
         return PlatformResponseBuilder.build(result);
     }
 
@@ -72,11 +84,33 @@ public class AuthController
      * @param response
      * @return
      */
-    @PostMapping(AuthUriConts.GET_LOGIN_REFRESH)
+    @PostMapping(AuthUriConts.POST_LOGIN_REFRESH)
     public ResponseEntity<SuccessResponse<JwtToken>> postLoginRefreshToken (@RequestBody JwtToken token, HttpServletResponse response)
     {
         JwtToken result = jwtTokenProvider.refreshAccessToken(token.getRefreshToken());
         response.addHeader(SwinglabConst.AUTHORIZATION_HEADER, StringUtils.join(SwinglabConst.BEARER_TOKEN, " ", result.getAccessToken()));
         return PlatformResponseBuilder.build(result);
+    }
+
+    /**
+     * 로그아웃 처리
+     *
+     * @param token
+     * @return
+     */
+    @PostMapping(AuthUriConts.POST_LOGOUT)
+    public ResponseEntity<SuccessResponse> postLogout (@RequestBody JwtToken token)
+    {
+        Long userId = SecurityUtil.getUserId();
+        // Refresh Token을 삭제
+        if (redisTemplate.opsForValue().get("RT:" + userId) != null)
+        {
+            redisTemplate.delete("RT:" + userId);
+        }
+
+        // redis에 로그아웃 저장 (access 토큰 유효시간만큼 지정)
+        long expirationTime = jwtTokenProvider.getExpirationFromToken(token.getAccessToken());
+        redisTemplate.opsForValue().set(token.getAccessToken(), "logout", expirationTime, TimeUnit.MILLISECONDS);
+        return PlatformResponseBuilder.build();
     }
 }

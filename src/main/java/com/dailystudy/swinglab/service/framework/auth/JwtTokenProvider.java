@@ -196,15 +196,14 @@ public class JwtTokenProvider
     }
 
     /**
-     * 토큰을 기반으로 사용자 정보를 반환받는 메서드
+     * 해당 토큰 만료값 구하기
      *
      * @param token : 토큰
-     * @return String : 사용자 아이디
      */
-    public String getUserIdFromToken (String token)
+    public Long getExpirationFromToken (String token)
     {
         Claims claims = getClaimsFormToken(token);
-        return claims.get(SwinglabConst.USER_ID).toString();
+        return claims.getExpiration().getTime() - new Date().getTime();
     }
 
     /**
