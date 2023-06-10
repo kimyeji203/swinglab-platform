@@ -42,9 +42,6 @@ public class QTicket extends EntityPathBase<Ticket> {
     //inherited
     public final NumberPath<Long> userId = _super.userId;
 
-    //inherited
-    public final BooleanPath useYn = _super.useYn;
-
     public QTicket(String variable) {
         super(Ticket.class, forVariable(variable));
     }

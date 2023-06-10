@@ -5,6 +5,7 @@ import com.dailystudy.swinglab.service.business.common.domain.entity.user.Ticket
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
+import com.dailystudy.swinglab.service.business.common.repository.user.TicketQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.business.user.service.TicketService;
@@ -26,6 +27,7 @@ public class MainService extends BaseService
     private final TicketService ticketService;
     private final ZoneRepository zoneRepository;
     private final ZoneBookHistQueryRepository zoneBookHistQueryRepository;
+    private final TicketQueryRepository ticketQueryRepository;
 
     /**
      * 메인 데이터
@@ -38,7 +40,9 @@ public class MainService extends BaseService
         // 유저 정보
         User user = userValidationService.getValidUser(userId);
         // 이용권 정보
-        Ticket ticket = ticketService.getMyTicket();
+        Ticket ticket = user.getTicketId() != null
+                ? ticketQueryRepository.findNowTicketByUserId(userId, user.getTicketId())
+                : null;
         // 예약 정보
         ZoneBookHist bookHist = zoneBookHistQueryRepository.findNextOneByUserId(userId);
         if (bookHist != null)

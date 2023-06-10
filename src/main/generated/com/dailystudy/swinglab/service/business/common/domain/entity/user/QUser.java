@@ -43,6 +43,9 @@ public class QUser extends EntityPathBase<User> {
     public final DateTimePath<java.time.LocalDateTime> signupDt = _super.signupDt;
 
     //inherited
+    public final NumberPath<Long> ticketId = _super.ticketId;
+
+    //inherited
     public final DateTimePath<java.time.LocalDateTime> updDt = _super.updDt;
 
     //inherited

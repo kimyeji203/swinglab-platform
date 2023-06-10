@@ -7,11 +7,14 @@ import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookH
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabAccessDeniedException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
 import com.dailystudy.swinglab.service.framework.utils.DateUtil;
+import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +29,6 @@ import java.util.Optional;
 public class ZoneValidService extends BaseService
 {
     private final ZoneRepository zoneRepository;
-    private final ZoneBookHistRepository zoneBookHistRepository;
     private final ZoneBookHistQueryRepository zoneBookHistQueryRepository;
 
     /**
@@ -73,7 +75,7 @@ public class ZoneValidService extends BaseService
          * 예약이 곂치는지 확인
          */
         // 예약 이력 조회
-        List<ZoneBookHist> bookHistList = zoneBookHistQueryRepository.findAllByZoneIdAndBookDt(zoneId, bookHist.getBookStDt(),bookHist.getBookEdDt());
+        List<ZoneBookHist> bookHistList = zoneBookHistQueryRepository.findAllByZoneIdAndBookDt(zoneId, bookHist.getBookStDt(), bookHist.getBookEdDt());
         if (bookHistList.isEmpty())
         {
             return;
@@ -97,6 +99,53 @@ public class ZoneValidService extends BaseService
             {
                 throw new SwinglabBadRequestException("해당 시간은 이미 예약되었습니다.");
             }
+        }
+    }
+
+    /**
+     * 유효한 예약건인지 확인 후 리턴
+     *
+     * @param bookId
+     * @return
+     */
+    public ZoneBookHist getValidBookHist (Long bookId)
+    {
+        Long userId = SecurityUtil.getUserId();
+        ZoneBookHist zoneBookHist = zoneBookHistQueryRepository.findOneByBookId(bookId);
+        if (zoneBookHist == null)
+        {
+            throw new SwinglabNotFoundException("존재하지 않는 예약건입니다.");
+        }
+        if (zoneBookHist.getUserId().equals(userId) == false)
+        {
+            throw new SwinglabAccessDeniedException("해당 예약의 예약자가 아닙니다.");
+        }
+        return zoneBookHist;
+    }
+
+    /**
+     * 예약 취소 가능한지 체크
+     *
+     * @param zoneBookHist
+     */
+    public void assertCanCancelBook (ZoneBookHist zoneBookHist)
+    {
+        // 이미 취소된 예약인지
+        if (BooleanUtils.isTrue(zoneBookHist.getBookCnclYn()))
+        {
+            throw new SwinglabBadRequestException("이미 취소된 예약건입니다.");
+        }
+
+        // 이미 지난 예약인지
+        if (zoneBookHist.getBookStDt().isBefore(LocalDateTime.now()))
+        {
+            throw new SwinglabBadRequestException("이미 지난 예약입니다.");
+        }
+
+        // 예약취소 가능한 시간인지
+        if (zoneBookHist.getBookStDt().minusMinutes(SwinglabConst.DF_MIN).isBefore(LocalDateTime.now()))
+        {
+            throw new SwinglabBadRequestException(StringUtils.join("예약 취소는 ", SwinglabConst.DF_MIN, "전까지 가능 합니다."));
         }
     }
 }

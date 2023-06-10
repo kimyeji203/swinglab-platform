@@ -2,8 +2,8 @@ package com.dailystudy.swinglab.service.business.common.controller;
 
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.Ticket;
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
-import com.dailystudy.swinglab.service.business.common.repository.user.TicketQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.user.TicketRepository;
+import com.dailystudy.swinglab.service.business.common.repository.user.UserQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
@@ -21,7 +21,7 @@ import java.util.List;
 public class TestController
 {
     private final UserRepository userRepository;
-    private final TicketQueryRepository ticketQueryRepository;
+    private final UserQueryRepository userQueryRepository;
     private final TicketRepository ticketRepository;
 
     @GetMapping("/test/{id}")
@@ -40,12 +40,11 @@ public class TestController
     @PostMapping("/test/user/{userId}/ticket")
     public ResponseEntity<SuccessResponse<Ticket>> postUserTicket (@PathVariable("userId") Long userId, @RequestBody Ticket ticket)
     {
-        ticketQueryRepository.updateOtherTicketByUserId(userId);
-
         ticket.setUserId(userId);
-        ticket.setUseYn(true);
         ticket.setSvcRegDay(LocalDate.now());
         ticket = ticketRepository.save(ticket);
+
+        userQueryRepository.updateTicketIdByUserId(userId, ticket.getTicketId());
         return PlatformResponseBuilder.build(ticket);
     }
 }

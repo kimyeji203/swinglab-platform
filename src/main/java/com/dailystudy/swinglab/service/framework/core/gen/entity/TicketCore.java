@@ -32,7 +32,4 @@ public class TicketCore extends BaseEntity
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT, timezone = SwinglabConst.TIME_ZONE)
     @Column(name = "SVC_ED_DAY")
     private LocalDate svcEdDay;
-    @JsonIgnore
-    @Column(name = "USE_YN")
-    private Boolean useYn;
 }

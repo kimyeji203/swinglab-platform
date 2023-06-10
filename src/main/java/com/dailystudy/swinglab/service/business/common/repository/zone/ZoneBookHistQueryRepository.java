@@ -17,6 +17,14 @@ public class ZoneBookHistQueryRepository
 {
     private final JPAQueryFactory jpaQueryFactory;
 
+    public ZoneBookHist findOneByBookId (Long bookId)
+    {
+        return jpaQueryFactory
+                .selectFrom(zoneBookHist)
+                .where(zoneBookHist.bookId.eq(bookId))
+                .fetchOne();
+    }
+
     public List<ZoneBookHist> findAllByZoneIdAndBookDt (Long zoneId, LocalDateTime bookStDt, LocalDateTime bookEdDt)
     {
         return jpaQueryFactory
@@ -38,6 +46,16 @@ public class ZoneBookHistQueryRepository
                 )
                 .orderBy(zoneBookHist.bookStDt.asc())
                 .fetchFirst();
+    }
+
+    public void updateBookCnclYnTrue(Long bookId)
+    {
+        jpaQueryFactory
+                .update(zoneBookHist)
+                .set(zoneBookHist.bookCnclYn, true)
+                .set(zoneBookHist.updDt, LocalDateTime.now())
+                .where(zoneBookHist.bookId.eq(bookId))
+                .execute();
     }
 
 }

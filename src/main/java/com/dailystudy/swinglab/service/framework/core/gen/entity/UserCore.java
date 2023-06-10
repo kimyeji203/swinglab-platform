@@ -38,4 +38,7 @@ public class UserCore extends BaseEntity
     @JsonIgnore
     @Column(name = "DEL_YN", nullable = false)
     private Boolean delYn;
+    @JsonIgnore
+    @Column(name = "TICKET_ID")
+    private Long ticketId;
 }

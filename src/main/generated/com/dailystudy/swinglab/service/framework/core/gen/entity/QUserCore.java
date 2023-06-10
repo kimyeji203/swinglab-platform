@@ -36,6 +36,8 @@ public class QUserCore extends EntityPathBase<UserCore> {
 
     public final DateTimePath<java.time.LocalDateTime> signupDt = createDateTime("signupDt", java.time.LocalDateTime.class);
 
+    public final NumberPath<Long> ticketId = createNumber("ticketId", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updDt = _super.updDt;
 

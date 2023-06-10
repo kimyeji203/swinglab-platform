@@ -2,14 +2,18 @@ package com.dailystudy.swinglab.service.business.zone.service;
 
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
+import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
+import com.dailystudy.swinglab.service.business.user.service.TicketValidationService;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ZoneService extends BaseService
 {
+    private final TicketValidationService ticketValidationService;
     private final ZoneValidService zoneValidService;
 
-    private final JPAQueryFactory jpaQueryFactory;
     private final ZoneRepository zoneRepository;
     private final ZoneBookHistRepository zoneBookHistRepository;
+    private final ZoneBookHistQueryRepository zoneBookHistQueryRepository;
 
     /**
      * 타석 목록 조회
@@ -52,7 +57,6 @@ public class ZoneService extends BaseService
         return zoneValidService.getValidZone(zoneSid);
     }
 
-
     /**
      * 해당 타석 예약
      *
@@ -72,6 +76,9 @@ public class ZoneService extends BaseService
 
         // 존재하는 타석인지 확인
         zoneValidService.getValidZone(zoneId);
+
+        // 이용권 보유 여부 체크
+        ticketValidationService.assertHaveTicket();
 
         // 예약 가능한지 체크
         zoneValidService.validateCanBook(zoneId, bookHist);
@@ -111,8 +118,24 @@ public class ZoneService extends BaseService
         }
     }
 
+    /**
+     * 예약 취소
+     *
+     * @param bookId
+     * @return
+     */
+    @Transactional
+    public ZoneBookHist cancleBook (Long bookId)
+    {
+        // 존재하는 예약건인지 (내예약인지)
+        ZoneBookHist zoneBookHist = zoneValidService.getValidBookHist(bookId);
 
-//    public ZoneBookHist getFirstBook()
-//    {
-//    }
+        // 예약 취소 가능여부
+        zoneValidService.assertCanCancelBook(zoneBookHist);
+
+        // 예약 취소
+        zoneBookHistQueryRepository.updateBookCnclYnTrue(bookId);
+
+        return zoneBookHistQueryRepository.findOneByBookId(bookId);
+    }
 }

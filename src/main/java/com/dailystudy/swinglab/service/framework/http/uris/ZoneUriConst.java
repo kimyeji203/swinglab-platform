@@ -19,7 +19,7 @@ public class ZoneUriConst {
     public static final String POST_ZONE_BOOKABLE_CHECK = "/v1/zone/{zoneId}/bookable/check"; // 해당 타석 예약 가능한지 체크
     public static final String POST_ZONE_BOOK = "/v1/zone/{zoneId}/book"; // 해당 타석 예약
     public static final String PUT_ZONE_BOOK = "/v1/zone/{zoneId}/book/{bookId}"; // 해당 타석 예약 정보 변경
-    public static final String PUT_ZONE_BOOK_CANCEL = "/v1/zone/{zoneId}/book/{bookId}/cancel"; // 해당 타석 예약 취소
+    public static final String PUT_ZONE_BOOK_CANCEL = "/v1/book/{bookId}/cancel"; // 해당 타석 예약 취소
 
     public static final String GET_MY_BOOK_LIST = "/v1/my/book/history"; // 내 예약 내역 조회
     public static final String GET_MY_BOOK_DETAIL = "/v1/my/book/{bookId}/history"; // 내 예약 상세 조회

@@ -8,6 +8,7 @@ import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessRes
 import com.dailystudy.swinglab.service.framework.http.uris.ZoneUriConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,5 +70,17 @@ public class ZoneController
     {
         zoneService.validateBookAtZone(zonId, bookHist);
         return PlatformResponseBuilder.build(true);
+    }
+
+    /**
+     * 타석 예약 취소
+     *
+     * @param bookId
+     * @return
+     */
+    @PutMapping(ZoneUriConst.PUT_ZONE_BOOK_CANCEL)
+    public ResponseEntity<SuccessResponse<ZoneBookHist>> putZoneBookCancel (@PathVariable("bookId") Long bookId)
+    {
+        return PlatformResponseBuilder.build(zoneService.cancleBook(bookId));
     }
 }

@@ -37,8 +37,6 @@ public class QTicketCore extends EntityPathBase<TicketCore> {
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
-    public final BooleanPath useYn = createBoolean("useYn");
-
     public QTicketCore(String variable) {
         super(TicketCore.class, forVariable(variable));
     }
