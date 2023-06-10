@@ -3,8 +3,8 @@ package com.dailystudy.swinglab.service.business.zone.service;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
-import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
-import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
@@ -26,8 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ZoneValidService extends BaseService
 {
-    private final SwingZoneRepository swingZoneRepository;
-    private final BookHistRepository bookHistRepository;
+    private final ZoneRepository zoneRepository;
+    private final ZoneBookHistRepository zoneBookHistRepository;
 
     /**
      * 존재하는 타석인지 확인 후 -> 리턴
@@ -37,7 +37,7 @@ public class ZoneValidService extends BaseService
      */
     public Zone getValidZone (Long zoneSid)
     {
-        Optional<Zone> optional = swingZoneRepository.findById(zoneSid);
+        Optional<Zone> optional = zoneRepository.findById(zoneSid);
         if (optional.isPresent() == false)
         {
             throw new SwinglabNotFoundException("존재하지 않는 타석입니다.");
@@ -61,7 +61,7 @@ public class ZoneValidService extends BaseService
         bookHist.setBookStTime(bookHist.getBookStTime().truncatedTo(ChronoUnit.MINUTES));
         bookHist.setBookEdTime(bookHist.getBookEdTime().truncatedTo(ChronoUnit.MINUTES));
         // 예약일 확인 (과거인지)
-        if (bookHist.getBookDay().isBefore(today))
+        if (bookHist.getBookStDay().isBefore(today))
         {
             throw new SwinglabBadRequestException(StringUtils.join(DateUtil.formatDate(today, SwinglabConst.DAY_FORMAT), " 이후 예약 가능합니다."));
         }
@@ -80,7 +80,7 @@ public class ZoneValidService extends BaseService
          * 예약이 곂치는지 확인
          */
         // 예약 이력 조회
-        List<ZoneBookHist> bookHistList = bookHistRepository.findAllByZoneIdAndBookDayAndBookCnclYnIsFalse(zoneId, bookHist.getBookDay());
+        List<ZoneBookHist> bookHistList = zoneBookHistRepository.findAllByZoneIdAndBookStDayAndBookCnclYnIsFalse(zoneId, bookHist.getBookStDay());
         if (bookHistList.isEmpty())
         {
             return;

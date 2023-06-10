@@ -7,15 +7,16 @@ api-test: false
 
 spring:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         jdbc:
           lob:
-            non_contextual_creation: true
+            non_contextual_creation: false
+        show_sql: false
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -25,10 +26,5 @@ spring:
 
 logging:
   level:
-    org:
-      hibernate:
-        sql: debug
-        type:
-          descriptor:
-            sql:
-              spi: trace
+    org.hibernate.SQL: info
+    org.hibernate.type: info

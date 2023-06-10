@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BookHistRepository extends JpaRepository<ZoneBookHist, Long>
+public interface ZoneBookHistRepository extends JpaRepository<ZoneBookHist, Long>
 {
-    List<ZoneBookHist> findAllByZoneIdAndBookDayAndBookCnclYnIsFalse(Long zoneId, LocalDate bookDay);
+    List<ZoneBookHist> findAllByZoneIdAndBookStDayAndBookCnclYnIsFalse(Long zoneId, LocalDate bookDay);
 }

@@ -27,11 +27,14 @@ public class ZoneBookHistCore extends BaseEntity
     @Column(name = "ZONE_ID", nullable = false)
     private Long zoneId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT)
-    @Column(name = "BOOK_DAY", nullable = false)
-    private LocalDate bookDay;
+    @Column(name = "BOOK_ST_DAY", nullable = false)
+    private LocalDate bookStDay;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.TIME_FORMAT)
     @Column(name = "BOOK_ST_TIME", nullable = false)
     private LocalTime bookStTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT)
+    @Column(name = "BOOK_ED_DAY", nullable = false)
+    private LocalDate bookEdDay;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.TIME_FORMAT)
     @Column(name = "BOOK_ED_TIME", nullable = false)
     private LocalTime bookEdTime;

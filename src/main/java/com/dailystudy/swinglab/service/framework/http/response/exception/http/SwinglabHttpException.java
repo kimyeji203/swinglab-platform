@@ -1,7 +1,7 @@
 package com.dailystudy.swinglab.service.framework.http.response.exception.http;
 
 import com.dailystudy.swinglab.service.framework.http.response.PlatformHttpStatus;
-import com.dailystudy.swinglab.service.framework.http.response.exception.message.MessageProvider;
+import com.dailystudy.swinglab.service.framework.http.response.MessageProvider;
 import com.dailystudy.swinglab.service.framework.http.response.exception.SwinglabRuntimeException;
 import com.dailystudy.swinglab.service.framework.utils.ArrayUtil;
 import lombok.Getter;

@@ -3,10 +3,11 @@ package com.dailystudy.swinglab.service.business.zone.service;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
-import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
-import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -21,8 +22,9 @@ public class ZoneService extends BaseService
 {
     private final ZoneValidService zoneValidService;
 
-    private final SwingZoneRepository swingZoneRepository;
-    private final BookHistRepository bookHistRepository;
+    private final JPAQueryFactory jpaQueryFactory;
+    private final ZoneRepository zoneRepository;
+    private final ZoneBookHistRepository zoneBookHistRepository;
 
     /**
      * 타석 목록 조회
@@ -31,7 +33,7 @@ public class ZoneService extends BaseService
      */
     public List<Zone> getZoneAllList ()
     {
-        return swingZoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
+        return zoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
     }
 
     /**
@@ -65,7 +67,7 @@ public class ZoneService extends BaseService
         // 유효성 검사
         assertNotEmpty(bookHist, "예약정보");
         assertNotEmpty(zoneId, "타석 ID");
-        assertNotEmpty(bookHist.getBookDay(), "예약일");
+        assertNotEmpty(bookHist.getBookStDay(), "예약일");
         assertNotEmpty(bookHist.getBookStTime(), "예약 시간(시작)");
         assertNotEmpty(bookHist.getBookEdTime(), "예약 시간(종료)");
 
@@ -79,7 +81,7 @@ public class ZoneService extends BaseService
         bookHist.setUserId(userSid);
         bookHist.setZoneId(zoneId);
         bookHist.setBookCnclYn(false);
-        return bookHistRepository.save(bookHist);
+        return zoneBookHistRepository.save(bookHist);
     }
 
     /**
@@ -95,7 +97,7 @@ public class ZoneService extends BaseService
             // 유효성 검사
             assertNotEmpty(bookHist, "예약정보");
             assertNotEmpty(zoneId, "타석 ID");
-            assertNotEmpty(bookHist.getBookDay(), "예약일");
+            assertNotEmpty(bookHist.getBookStDay(), "예약일");
             assertNotEmpty(bookHist.getBookStTime(), "예약 시간(시작)");
             assertNotEmpty(bookHist.getBookEdTime(), "예약 시간(종료)");
 
@@ -111,4 +113,7 @@ public class ZoneService extends BaseService
     }
 
 
+//    public ZoneBookHist getFirstBook()
+//    {
+//    }
 }

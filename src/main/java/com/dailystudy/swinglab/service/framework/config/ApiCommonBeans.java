@@ -1,7 +1,7 @@
 package com.dailystudy.swinglab.service.framework.config;
 
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
-import com.dailystudy.swinglab.service.framework.jackson.JacksonConvertor;
+import com.dailystudy.swinglab.service.framework.core.annotation.JacksonConvertor;
 import com.dailystudy.swinglab.service.framework.utils.ResourceScanner;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;

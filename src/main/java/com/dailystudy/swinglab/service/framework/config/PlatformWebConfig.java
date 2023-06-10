@@ -25,7 +25,7 @@ import java.util.List;
 public class PlatformWebConfig extends DelegatingWebMvcConfiguration
 {
     final Integer cachePeriod = 3600 * 30;
-    private final List<String> defResourceLocations = new ArrayList<>(Arrays.asList("/favicon.ico", "/css/", "/js/", "/images/", "/fonts/"));
+//    private final List<String> defResourceLocations = new ArrayList<>(Arrays.asList("/favicon.ico", "/css/", "/js/", "/images/", "/fonts/"));
 
     @Autowired
     private MappingJackson2HttpMessageConverter jsonConvertor;

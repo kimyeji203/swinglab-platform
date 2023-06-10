@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 
 ### QueryDSL ###
-src/main/generated/
+/src/main/generated/
 
 ### STS ###
 .apt_generated

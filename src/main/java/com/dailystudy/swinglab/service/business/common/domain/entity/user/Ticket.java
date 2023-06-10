@@ -1,16 +1,12 @@
 package com.dailystudy.swinglab.service.business.common.domain.entity.user;
 
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.gen.entity.TicketCore;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDate;
 
 @Data
 @Entity

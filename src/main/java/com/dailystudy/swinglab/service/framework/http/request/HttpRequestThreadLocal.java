@@ -8,67 +8,57 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HttpRequestThreadLocal
 {
+    private final static ThreadLocal<ApiRequestCache> restApiResponseThreadLocal = ThreadLocal.withInitial(ApiRequestCache::new);
 
-	private final static ThreadLocal<ApiRequestCache> restApiResponseThreadLocal = new ThreadLocal<ApiRequestCache>()
-	{
-		@Override
-		protected ApiRequestCache initialValue()
-		{
-			return new ApiRequestCache();
-		}
-
-		;
-	};
-
-	public static ApiRequestCache getRestApiResponse()
-	{
-		return restApiResponseThreadLocal.get();
-	}
-
-	public static void setResponseBody(String responseBody)
+    public static ApiRequestCache getRestApiResponse ()
     {
-	    ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
+        return restApiResponseThreadLocal.get();
+    }
+
+    public static void setResponseBody (String responseBody)
+    {
+        ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
         if (restApiResponse == null)
         {
             restApiResponse = new ApiRequestCache();
             restApiResponseThreadLocal.set(restApiResponse);
         }
-        
+
         restApiResponse.setHttpSttus(PlatformHttpStatus.OK);
         restApiResponse.setResponseBody(responseBody);
     }
-	
-	public static void setRestApiResponse(PlatformHttpStatus httpSttus)
-	{
-		setRestApiResponse(httpSttus, null);
-	}
 
-	public static void setRestApiResponse(PlatformHttpStatus httpSttus, ErrorResponse errorResponse)
-	{
-		ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
-		if (restApiResponse == null)
-		{
-			restApiResponse = new ApiRequestCache();
-			restApiResponseThreadLocal.set(restApiResponse);
-		}
+    public static void setRestApiResponse (PlatformHttpStatus httpSttus)
+    {
+        setRestApiResponse(httpSttus, null);
+    }
 
-		restApiResponse.setHttpSttus(httpSttus);
-		restApiResponse.setErrorResponse(errorResponse);
-	}
+    public static void setRestApiResponse (PlatformHttpStatus httpSttus, ErrorResponse errorResponse)
+    {
+        ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
+        if (restApiResponse == null)
+        {
+            restApiResponse = new ApiRequestCache();
+            restApiResponseThreadLocal.set(restApiResponse);
+        }
 
-	public static void setRequestBody(String requestBody)
-	{
-		ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
-		if (restApiResponse == null)
-		{
-			restApiResponse = new ApiRequestCache();
-			restApiResponseThreadLocal.set(restApiResponse);
-		}
-		restApiResponse.setRequestBody(requestBody);
-	}
+        restApiResponse.setHttpSttus(httpSttus);
+        restApiResponse.setErrorResponse(errorResponse);
+    }
 
-	public static void remove()
-	{
-		restApiResponseThreadLocal.remove();
-	}
+    public static void setRequestBody (String requestBody)
+    {
+        ApiRequestCache restApiResponse = restApiResponseThreadLocal.get();
+        if (restApiResponse == null)
+        {
+            restApiResponse = new ApiRequestCache();
+            restApiResponseThreadLocal.set(restApiResponse);
+        }
+        restApiResponse.setRequestBody(requestBody);
+    }
+
+    public static void remove ()
+    {
+        restApiResponseThreadLocal.remove();
+    }
 }

@@ -1,9 +1,10 @@
 package com.dailystudy.swinglab.service.business.common.domain.entity.common;
 
 import com.dailystudy.swinglab.service.framework.core.gen.entity.ApiLogCore;
+import lombok.*;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
 
 @Data
 @Entity

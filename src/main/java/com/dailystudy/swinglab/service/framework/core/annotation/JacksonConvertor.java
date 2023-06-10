@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework.jackson;
+package com.dailystudy.swinglab.service.framework.core.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework.http.response.exception.message;
+package com.dailystudy.swinglab.service.framework.http.response;
 
 public interface MessageProvider
 {
