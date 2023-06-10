@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 @EntityListeners(value = {AuditingEntityListener.class}) // AuditingEntityListener : JPA 내부에서 엔티티 객체가 생성/변경 되는것을 감지하는 역할
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SwingZoneCore extends BaseEntity
+public class ZoneCore extends BaseEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

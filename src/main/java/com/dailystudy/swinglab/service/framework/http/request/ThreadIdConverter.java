@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework.http.log;
+package com.dailystudy.swinglab.service.framework.http.request;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;

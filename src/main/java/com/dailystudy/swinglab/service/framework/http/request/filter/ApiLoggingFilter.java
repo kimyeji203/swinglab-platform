@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,9 @@ public class ApiLoggingFilter extends GenericFilterBean
 {
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Value("${api-test}")
+    private Boolean apiTest;
 
     private final ApiLogRepository apiLogRepository;
 
@@ -116,19 +121,14 @@ public class ApiLoggingFilter extends GenericFilterBean
 
         try
         {
-            HttpServletRequest servletRequest = ((HttpServletRequest) request);
-            String method = servletRequest.getMethod(); // 요청 메소드
+            String method = httpServletRequest.getMethod(); // 요청 메소드
             if (method.equalsIgnoreCase("get") || method.equalsIgnoreCase("delete"))
             {
                 requestUri = StringUtils.join(requestUri, "?", httpServletRequest.getQueryString());
             }
             String reqBody = restApiResponse.getRequestBody(); // 요청 바디
             String resBody = restApiResponse.getResponseBody();
-            String clientIp = servletRequest.getHeader("x-client-ip"); // 요청한 서버의 ip
-            if (StringUtils.isEmpty(clientIp))
-            {
-                clientIp = request.getRemoteAddr();
-            }
+            String clientIp = getClientIP(httpServletRequest);
 
             long contentLength = 0;
             if (response instanceof ContentCachingResponseWrapper)
@@ -136,11 +136,10 @@ public class ApiLoggingFilter extends GenericFilterBean
                 contentLength = ((ContentCachingResponseWrapper) response).getContentSize();
             } else
             {
-                String cl = ((HttpServletResponse) response).getHeader("Content-Length");
-                contentLength = NumberUtils.toLong(cl, 0);
+                contentLength = NumberUtils.toLong(((HttpServletResponse) response).getHeader("Content-Length"), 0);
             }
 
-            ApiLog apiLog = new ApiLog();
+            ApiLog apiLog = ApiLog.builder().build();
             apiLog.setReqDt(start);
             apiLog.setResDt(new Date());
             apiLog.setTxId(transactionId);
@@ -148,7 +147,6 @@ public class ApiLoggingFilter extends GenericFilterBean
             apiLog.setApi(StringUtils.join("[", method, "] ", requestUri));
             apiLog.setReqBody(reqBody);
             apiLog.setResBodyLen(contentLength);
-
             if (ObjectUtils.isEmpty(httpSttus) || httpSttus == PlatformHttpStatus.OK)
             {
                 apiLog.setHttpSttusCd(HttpStatus.OK.value());
@@ -159,9 +157,9 @@ public class ApiLoggingFilter extends GenericFilterBean
             {
                 apiLog.setHttpSttusCd(httpSttus.value());
                 apiLog.setResYn(false);
-                apiLog.setResCd(errorResponse.getErrorCode());
                 if (errorResponse != null)
                 {
+                    apiLog.setResCd(errorResponse.getErrorCode());
                     if (errorResponse.getErrorMessage() != null && errorResponse.getErrorMessage().length() > 500)
                     {
                         apiLog.setResBody(errorResponse.getErrorMessage().substring(0, 500));
@@ -173,11 +171,44 @@ public class ApiLoggingFilter extends GenericFilterBean
             }
 
             // API 이력 DB 저장
-            apiLog.setReqDt(new Date());
-            apiLogRepository.save(apiLog);
+            if (BooleanUtils.isFalse(apiTest))
+            {
+                apiLogRepository.save(apiLog);
+            }
         } catch (Exception ex)
         {
             log.warn(ex.getMessage(), ex);
         }
+    }
+
+    private static String getClientIP (HttpServletRequest request)
+    {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null)
+        {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null)
+        {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null)
+        {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null)
+        {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null)
+        {
+            ip = request.getRemoteAddr();
+        }
+
+        if (StringUtils.equals(ip, "127.0.0.1") || StringUtils.equals(ip, "0:0:0:0:0:0:0:1"))
+        {
+            return "localhost";
+        }
+        return ip;
     }
 }

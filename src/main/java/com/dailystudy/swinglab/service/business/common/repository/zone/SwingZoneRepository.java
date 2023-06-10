@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.common.repository.zone;
 
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SwingZoneRepository extends JpaRepository<SwingZone, Long>
+public interface SwingZoneRepository extends JpaRepository<Zone, Long>
 {
 }

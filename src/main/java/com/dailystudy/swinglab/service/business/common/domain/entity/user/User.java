@@ -20,4 +20,7 @@ public class User extends UserCore
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pwdChk;
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String crntPwd;
 }

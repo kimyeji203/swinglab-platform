@@ -40,4 +40,17 @@ public class UserController
     {
         return PlatformResponseBuilder.build(userService.modifyUserNickName(user));
     }
+
+    /**
+     * 내 비밀번호 수정
+     *
+     * @param user
+     * @return
+     */
+    @PutMapping(UserUriConst.PUT_MY_INFO_PWD)
+    public ResponseEntity<SuccessResponse> putMyInfoPwd (@RequestBody User user)
+    {
+        userService.modifyUserPwd(user);
+        return PlatformResponseBuilder.build();
+    }
 }

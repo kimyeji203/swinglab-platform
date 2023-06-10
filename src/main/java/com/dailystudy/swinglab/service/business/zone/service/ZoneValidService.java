@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.BookHist;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
@@ -35,9 +35,9 @@ public class ZoneValidService extends BaseService
      * @param zoneSid
      * @return
      */
-    public SwingZone getValidZone (Long zoneSid)
+    public Zone getValidZone (Long zoneSid)
     {
-        Optional<SwingZone> optional = swingZoneRepository.findById(zoneSid);
+        Optional<Zone> optional = swingZoneRepository.findById(zoneSid);
         if (optional.isPresent() == false)
         {
             throw new SwinglabNotFoundException("존재하지 않는 타석입니다.");
@@ -50,7 +50,7 @@ public class ZoneValidService extends BaseService
      *
      * @param bookHist
      */
-    public void validateCanBook (Long zoneId, BookHist bookHist)
+    public void validateCanBook (Long zoneId, ZoneBookHist bookHist)
     {
         /*
          * 예약 시간 확인
@@ -80,7 +80,7 @@ public class ZoneValidService extends BaseService
          * 예약이 곂치는지 확인
          */
         // 예약 이력 조회
-        List<BookHist> bookHistList = bookHistRepository.findAllByZoneIdAndBookDayAndBookCnclYnIsFalse(zoneId, bookHist.getBookDay());
+        List<ZoneBookHist> bookHistList = bookHistRepository.findAllByZoneIdAndBookDayAndBookCnclYnIsFalse(zoneId, bookHist.getBookDay());
         if (bookHistList.isEmpty())
         {
             return;
@@ -89,7 +89,7 @@ public class ZoneValidService extends BaseService
         // 해당 시간 예약되었는지 확인
         LocalTime startTime = bookHist.getBookStTime();
         LocalTime endTime = bookHist.getBookEdTime();
-        for (BookHist hist : bookHistList)
+        for (ZoneBookHist hist : bookHistList)
         {
             // 1. 예약하려는 시간안에 다른 예약이 이미 잡혀있는지.
             if (hist.getBookStTime().isBefore(endTime) && hist.getBookEdTime().isAfter(startTime))

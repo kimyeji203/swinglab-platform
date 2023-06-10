@@ -22,8 +22,6 @@ class SwinglabServiceApplicationTests {
 		user.setPwdChk("qhdks@00");
 		user.setDelYn(false);
 		user.setLoginId("test");
-		user.setSvcStDay(LocalDate.now());
-		user.setSvcEdDay(LocalDate.now());
 		userRepository.save(user);
 	}
 

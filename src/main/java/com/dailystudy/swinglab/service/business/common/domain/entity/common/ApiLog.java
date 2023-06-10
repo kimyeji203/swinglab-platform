@@ -5,11 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 
-@Entity
-@Table(name="tb_api_log")
-@Builder
 @Data
+@Entity
+@Builder
 @NoArgsConstructor
+@Table(name="tb_api_log")
 @EqualsAndHashCode(callSuper = true)
 public class ApiLog extends ApiLogCore
 {

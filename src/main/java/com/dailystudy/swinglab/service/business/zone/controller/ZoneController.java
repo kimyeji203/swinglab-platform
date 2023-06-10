@@ -1,7 +1,7 @@
 package com.dailystudy.swinglab.service.business.zone.controller;
 
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.BookHist;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.zone.service.ZoneService;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
@@ -27,7 +27,7 @@ public class ZoneController
      * @return
      */
     @GetMapping(ZoneUriConst.GET_ZONE_LIST)
-    public ResponseEntity<SuccessResponse<List<SwingZone>>> getZoneList ()
+    public ResponseEntity<SuccessResponse<List<Zone>>> getZoneList ()
     {
         return PlatformResponseBuilder.build(zoneService.getZoneAllList());
     }
@@ -39,7 +39,7 @@ public class ZoneController
      * @return
      */
     @GetMapping(ZoneUriConst.GET_ZONE_DETAIL)
-    public ResponseEntity<SuccessResponse<SwingZone>> getZoneDetail (@PathVariable("zoneId") Long zoneId)
+    public ResponseEntity<SuccessResponse<Zone>> getZoneDetail (@PathVariable("zoneId") Long zoneId)
     {
         return PlatformResponseBuilder.build(zoneService.getZoneDetail(zoneId));
     }
@@ -52,7 +52,7 @@ public class ZoneController
      * @return
      */
     @PostMapping(ZoneUriConst.POST_ZONE_BOOK)
-    public ResponseEntity<SuccessResponse<BookHist>> postZoneBook (@PathVariable("zoneId") Long zonId, @RequestBody BookHist bookHist)
+    public ResponseEntity<SuccessResponse<ZoneBookHist>> postZoneBook (@PathVariable("zoneId") Long zonId, @RequestBody ZoneBookHist bookHist)
     {
         return PlatformResponseBuilder.build(zoneService.bookAtZone(zonId, bookHist));
     }
@@ -65,7 +65,7 @@ public class ZoneController
      * @return
      */
     @PostMapping(ZoneUriConst.POST_ZONE_BOOKABLE_CHECK)
-    public ResponseEntity<SuccessResponse<Boolean>> postZoneBookableCheck (@PathVariable("zoneId") Long zonId, @RequestBody BookHist bookHist)
+    public ResponseEntity<SuccessResponse<Boolean>> postZoneBookableCheck (@PathVariable("zoneId") Long zonId, @RequestBody ZoneBookHist bookHist)
     {
         zoneService.validateBookAtZone(zonId, bookHist);
         return PlatformResponseBuilder.build(true);

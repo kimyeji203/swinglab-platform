@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /common
 
+api-test: false
+
 spring:
   jpa:
     show-sql: true

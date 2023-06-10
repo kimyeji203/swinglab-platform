@@ -92,7 +92,7 @@
         <queueSize>1024</queueSize>
     </appender>
 
-    <conversionRule conversionWord="tid" converterClass="com.dailystudy.swinglab.service.framework.http.log.ThreadIdConverter"/>
+    <conversionRule conversionWord="tid" converterClass="com.dailystudy.swinglab.service.framework.http.request.ThreadIdConverter"/>
 
 
     <logger name="com.dailystudy.swinglab" level="debug" additivity="false">

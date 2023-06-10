@@ -1,8 +1,8 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.BookHist;
-import com.dailystudy.swinglab.service.business.common.domain.entity.zone.SwingZone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.repository.zone.BookHistRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.SwingZoneRepository;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
@@ -29,7 +29,7 @@ public class ZoneService extends BaseService
      *
      * @return
      */
-    public List<SwingZone> getZoneAllList ()
+    public List<Zone> getZoneAllList ()
     {
         return swingZoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
     }
@@ -40,7 +40,7 @@ public class ZoneService extends BaseService
      * @param zoneSid
      * @return
      */
-    public SwingZone getZoneDetail (Long zoneSid)
+    public Zone getZoneDetail (Long zoneSid)
     {
         this.assertNotEmpty(zoneSid, "타석 ID");
 
@@ -58,7 +58,7 @@ public class ZoneService extends BaseService
      * @param bookHist
      * @return
      */
-    public BookHist bookAtZone (Long zoneId, BookHist bookHist)
+    public ZoneBookHist bookAtZone (Long zoneId, ZoneBookHist bookHist)
     {
         Long userSid = SecurityUtil.getUserId();
 
@@ -88,7 +88,7 @@ public class ZoneService extends BaseService
      * @param zoneId
      * @param bookHist
      */
-    public void validateBookAtZone (Long zoneId, BookHist bookHist)
+    public void validateBookAtZone (Long zoneId, ZoneBookHist bookHist)
     {
         try
         {
