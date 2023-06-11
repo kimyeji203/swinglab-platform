@@ -9,6 +9,7 @@ import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseB
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
 import com.dailystudy.swinglab.service.framework.http.uris.AuthUriConts;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class AuthController
         //        CookieUtil.addCookie(response, SwinglabConst.COOKIE_REFRESH_TOKEN_KEY, result.getRefreshToken(), result.getRefreshExpSec());
 
         // redis에 리프레시 토큰 저장
-        redisTemplate.opsForValue().set("RT:" + SecurityUtil.getUserId(),
+        redisTemplate.opsForValue().set(StringUtils.join(SwinglabConst.REDIS_KEY_LOGIN_REFRESH_TOKEN,":",SecurityUtil.getUserId()),
                 result.getRefreshToken(),
                 jwtTokenProvider.getExpirationFromToken(result.getRefreshToken()),
                 TimeUnit.MILLISECONDS
@@ -99,18 +100,20 @@ public class AuthController
      * @return
      */
     @PostMapping(AuthUriConts.POST_LOGOUT)
-    public ResponseEntity<SuccessResponse> postLogout (@RequestBody JwtToken token)
+    public ResponseEntity<SuccessResponse> postLogout (HttpServletRequest request)
     {
         Long userId = SecurityUtil.getUserId();
         // Refresh Token을 삭제
-        if (redisTemplate.opsForValue().get("RT:" + userId) != null)
+        String key = StringUtils.join(SwinglabConst.REDIS_KEY_LOGIN_REFRESH_TOKEN,":",userId);
+        if (redisTemplate.opsForValue().get(key) != null)
         {
-            redisTemplate.delete("RT:" + userId);
+            redisTemplate.delete(key);
         }
 
         // redis에 로그아웃 저장 (access 토큰 유효시간만큼 지정)
-        long expirationTime = jwtTokenProvider.getExpirationFromToken(token.getAccessToken());
-        redisTemplate.opsForValue().set(token.getAccessToken(), "logout", expirationTime, TimeUnit.MILLISECONDS);
+        String accessToken = jwtTokenProvider.getTokenFromHeader(request.getHeader(SwinglabConst.AUTHORIZATION_HEADER));
+        long expirationTime = jwtTokenProvider.getExpirationFromToken(accessToken);
+        redisTemplate.opsForValue().set(StringUtils.join(SwinglabConst.REDIS_KEY_LOGOUT_ACCESS_TOKEN,":",accessToken), SwinglabConst.REDIS_VALUE_LOGOUT, expirationTime, TimeUnit.MILLISECONDS);
         return PlatformResponseBuilder.build();
     }
 }

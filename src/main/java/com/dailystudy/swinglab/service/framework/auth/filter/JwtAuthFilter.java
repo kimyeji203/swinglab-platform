@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -65,8 +66,8 @@ public class JwtAuthFilter extends OncePerRequestFilter
         }
 
         // 5. 로그아웃 확인
-        String isLogout = (String) redisTemplate.opsForValue().get(token);
-        if(StringUtil.isNotEmptyString(isLogout))
+        String isLogout = (String) redisTemplate.opsForValue().get(StringUtils.join(SwinglabConst.REDIS_KEY_LOGOUT_ACCESS_TOKEN, ":", token));
+        if (StringUtils.equalsIgnoreCase(isLogout, SwinglabConst.REDIS_VALUE_LOGOUT))
         {
             log.error("{} : it is logout token.", request.getRequestURI());
             throw new SwinglabUnauthorizedException("유효하지 않은 Token입니다.");

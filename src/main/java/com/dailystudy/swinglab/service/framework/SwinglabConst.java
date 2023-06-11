@@ -9,12 +9,19 @@ public class SwinglabConst
     public static final String TIME_ZONE = "Asia/Seoul";
     public static final String COOKIE_REFRESH_TOKEN_KEY = "refresh_token";
     public static final String DAY_FORMAT = "yyyy-MM-dd";
-    public static final String DT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DT_FORMAT = "yyyy-MM-dd HH:mm";
     public static final String TIME_FORMAT = "HH:mm";
     public static final String UTF8 = "UTF-8";
     public static final String TXID = "TXID";
 
     public static final Integer DF_MIN = 15;
+
+    /*
+     * Redis
+     */
+    public static final String REDIS_KEY_LOGIN_REFRESH_TOKEN = "LOGIN-RT";
+    public static final String REDIS_KEY_LOGOUT_ACCESS_TOKEN = "LOGOUT-ST";
+    public static final String REDIS_VALUE_LOGOUT = "logout";
 
     /*
      * 토큰
