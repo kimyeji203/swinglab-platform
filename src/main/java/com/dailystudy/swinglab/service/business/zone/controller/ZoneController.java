@@ -23,6 +23,18 @@ public class ZoneController
     private final ZoneService zoneService;
 
     /**
+     * 전체 예약 현황 조회
+     *
+     * @param zoneBookHist
+     * @return
+     */
+    @GetMapping(ZoneUriConst.GET_BOOKING_LIST)
+    public ResponseEntity<SuccessResponse<List<ZoneBookHist>>> getBookingList (ZoneBookHist zoneBookHist)
+    {
+        return PlatformResponseBuilder.build(zoneService.getZoneBookList(zoneBookHist));
+    }
+
+    /**
      * 타석 목록 조회
      *
      * @return

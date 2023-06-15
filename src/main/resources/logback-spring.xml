@@ -97,16 +97,11 @@
 
     <logger name="com.dailystudy.swinglab" level="debug" additivity="false">
         <appender-ref ref="SWINGLAB_DEBUG_APPENDER"/>
+        <appender-ref ref="SWINGLAB_ERROR_APPENDER"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="com.dailystudy" level="info" additivity="false">
-        <appender-ref ref="SWINGLAB_DEBUG_APPENDER"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-
-    <logger name="org.apache.ibatis.logging" level="info" additivity="false">
-        <appender-ref ref="SWINGLAB_DEBUG_APPENDER"/>
+    <logger name="org.hibernate" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 

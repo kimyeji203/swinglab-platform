@@ -7,7 +7,7 @@ api-test: true
 
 spring:
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: none
     properties:
@@ -40,9 +40,3 @@ security:
     , ${server.servlet.context-path}/test/**
   ignoring: >
     /favicon.ico
-
-
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace

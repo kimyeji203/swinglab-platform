@@ -3,7 +3,6 @@ package com.dailystudy.swinglab.service.business.zone.service;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistQueryRepository;
-import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
@@ -111,7 +110,7 @@ public class ZoneValidService extends BaseService
     public ZoneBookHist getValidBookHist (Long bookId)
     {
         Long userId = SecurityUtil.getUserId();
-        ZoneBookHist zoneBookHist = zoneBookHistQueryRepository.findOneByBookId(bookId);
+        ZoneBookHist zoneBookHist = zoneBookHistQueryRepository.findOneByKey(bookId);
         if (zoneBookHist == null)
         {
             throw new SwinglabNotFoundException("존재하지 않는 예약건입니다.");

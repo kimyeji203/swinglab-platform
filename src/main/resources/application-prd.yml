@@ -27,8 +27,3 @@ spring:
       host: 13.125.190.65
       port: 6379
       password: swinglabqhdks@00
-
-logging:
-  level:
-    org.hibernate.SQL: info
-    org.hibernate.type: info

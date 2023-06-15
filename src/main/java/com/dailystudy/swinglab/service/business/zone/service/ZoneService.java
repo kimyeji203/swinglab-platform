@@ -9,15 +9,17 @@ import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.user.service.TicketValidationService;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +32,43 @@ public class ZoneService extends BaseService
     private final ZoneRepository zoneRepository;
     private final ZoneBookHistRepository zoneBookHistRepository;
     private final ZoneBookHistQueryRepository zoneBookHistQueryRepository;
+
+    public List<ZoneBookHist> getZoneBookList (ZoneBookHist param)
+    {
+        Long userId = SecurityUtil.getUserId();
+
+        /*
+         * 데이터 조회
+         */
+        // 파라미터 기본 세팅
+        if (param.getBookDaySt() == null)
+        {
+            param.setBookDaySt(LocalDate.now());
+        }
+        if (param.getBookDayEd() == null)
+        {
+            param.setBookDayEd(param.getBookDaySt().plusDays(7));
+        }
+        param.setBookCnclYn(false);
+        List<ZoneBookHist> result = zoneBookHistQueryRepository.findAllByWhere(param);
+        if (result.isEmpty())
+        {
+            return result;
+        }
+        List<Zone> zoneList = zoneRepository.findAll();
+
+        /*
+         * 데이터 세팅
+         */
+        Map<Long, Zone> zoneMap = zoneList.stream().collect(Collectors.toMap(Zone::getZoneId, Function.identity()));
+        for (ZoneBookHist zoneBookHist : result)
+        {
+            zoneBookHist.setZoneNm(zoneMap.get(zoneBookHist.getZoneId()).getZoneNm());
+            zoneBookHist.setIsMyBook(userId.equals(zoneBookHist.getUserId()));
+        }
+
+        return result;
+    }
 
     /**
      * 타석 목록 조회
@@ -114,6 +153,7 @@ public class ZoneService extends BaseService
             zoneValidService.validateCanBook(zoneId, bookHist);
         } catch (Exception e)
         {
+            log.error(e.getMessage(), e);
             throw new SwinglabBadRequestException("예약 할 수 없습니다.");
         }
     }
@@ -134,8 +174,8 @@ public class ZoneService extends BaseService
         zoneValidService.assertCanCancelBook(zoneBookHist);
 
         // 예약 취소
-        zoneBookHistQueryRepository.updateBookCnclYnTrue(bookId);
+        zoneBookHistQueryRepository.updateBookCnclYnTrueByKey(bookId);
 
-        return zoneBookHistQueryRepository.findOneByBookId(bookId);
+        return zoneBookHistQueryRepository.findOneByKey(bookId);
     }
 }
