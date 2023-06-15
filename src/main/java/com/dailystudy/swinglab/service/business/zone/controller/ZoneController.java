@@ -2,6 +2,7 @@ package com.dailystudy.swinglab.service.business.zone.controller;
 
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneUsageHist;
 import com.dailystudy.swinglab.service.business.zone.service.ZoneService;
 import com.dailystudy.swinglab.service.framework.http.response.PlatformResponseBuilder;
 import com.dailystudy.swinglab.service.framework.http.response.domain.SuccessResponse;
@@ -95,4 +96,17 @@ public class ZoneController
     {
         return PlatformResponseBuilder.build(zoneService.cancleBook(bookId));
     }
+
+    /**
+     * 타석 입실 처리
+     *
+     * @param bookId
+     * @return
+     */
+    @PutMapping(ZoneUriConst.PUT_ZONE_BOOK_CHECK_IN)
+    public ResponseEntity<SuccessResponse<ZoneUsageHist>> putZoneBookCheckIn (@PathVariable("bookId") Long bookId)
+    {
+        return PlatformResponseBuilder.build(zoneService.checkInBook(bookId));
+    }
+
 }

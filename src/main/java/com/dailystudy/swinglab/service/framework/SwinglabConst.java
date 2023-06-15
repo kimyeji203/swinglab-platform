@@ -32,6 +32,7 @@ public class SwinglabConst
     public static final String USER_ID = "userId";
     public static final String LOGIN_ID = "loginId";
     public static final String USER_NM = "userNm";
+    public static final String UNKNOWN = "(알수없음)";
 
     @Getter
     public enum JWT_EXCEPT

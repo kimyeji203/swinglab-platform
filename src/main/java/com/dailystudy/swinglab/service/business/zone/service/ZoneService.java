@@ -1,12 +1,14 @@
 package com.dailystudy.swinglab.service.business.zone.service;
 
+import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.Zone;
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
-import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistQueryRepository;
-import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistRepository;
-import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
+import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneUsageHist;
+import com.dailystudy.swinglab.service.business.common.repository.user.UserQueryRepository;
+import com.dailystudy.swinglab.service.business.common.repository.zone.*;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.user.service.TicketValidationService;
+import com.dailystudy.swinglab.service.framework.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,9 +32,12 @@ public class ZoneService extends BaseService
     private final TicketValidationService ticketValidationService;
     private final ZoneValidService zoneValidService;
 
+    private final UserQueryRepository userQueryRepository;
     private final ZoneRepository zoneRepository;
     private final ZoneBookHistRepository zoneBookHistRepository;
     private final ZoneBookHistQueryRepository zoneBookHistQueryRepository;
+    private final ZoneUsageHistRepository zoneUsageHistRepository;
+    private final ZoneUsageHistQueryRepository zoneUsageHistQueryRepository;
 
     public List<ZoneBookHist> getZoneBookList (ZoneBookHist param)
     {
@@ -50,19 +56,26 @@ public class ZoneService extends BaseService
             param.setBookDayEd(param.getBookDaySt().plusDays(7));
         }
         param.setBookCnclYn(false);
+        // 예약 목록 조회
         List<ZoneBookHist> result = zoneBookHistQueryRepository.findAllByWhere(param);
         if (result.isEmpty())
         {
             return result;
         }
+        // 타석 조회
         List<Zone> zoneList = zoneRepository.findAll();
+        // 유저 조회
+        List<Long> userIdList = result.stream().map(ZoneBookHist::getUserId).toList();
+        List<User> userList = userQueryRepository.findAllByUserIdList(userIdList);
 
         /*
          * 데이터 세팅
          */
+        Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(User::getUserId, Function.identity()));
         Map<Long, Zone> zoneMap = zoneList.stream().collect(Collectors.toMap(Zone::getZoneId, Function.identity()));
         for (ZoneBookHist zoneBookHist : result)
         {
+            zoneBookHist.setNickNm(userMap.get(zoneBookHist.getUserId()) == null ? SwinglabConst.UNKNOWN : userMap.get(zoneBookHist.getUserId()).getNickNm());
             zoneBookHist.setZoneNm(zoneMap.get(zoneBookHist.getZoneId()).getZoneNm());
             zoneBookHist.setIsMyBook(userId.equals(zoneBookHist.getUserId()));
         }
@@ -177,5 +190,33 @@ public class ZoneService extends BaseService
         zoneBookHistQueryRepository.updateBookCnclYnTrueByKey(bookId);
 
         return zoneBookHistQueryRepository.findOneByKey(bookId);
+    }
+
+    /**
+     * 입실 처리
+     *
+     * @param bookId
+     * @return
+     */
+    public ZoneUsageHist checkInBook (Long bookId)
+    {
+        // 존재하는 예약건인지 (내예약인지)
+        ZoneBookHist zoneBookHist = zoneValidService.getValidBookHist(bookId);
+
+        // 이미 입실되었는지
+        ZoneUsageHist zoneUsageHist = zoneUsageHistQueryRepository.findOneByKey(bookId);
+        if (zoneUsageHist != null)
+        {
+            throw new SwinglabBadRequestException("이미 입실하셨습니다.");
+        }
+
+        // 입실 가능 여부
+        zoneValidService.assertCanCheckIn(zoneBookHist);
+
+        // 입실 처리
+        zoneUsageHist = ZoneUsageHist.builder().build();
+        zoneUsageHist.setBookId(bookId);
+        zoneUsageHist.setChkInDt(LocalDateTime.now());
+        return zoneUsageHistRepository.save(zoneUsageHist);
     }
 }

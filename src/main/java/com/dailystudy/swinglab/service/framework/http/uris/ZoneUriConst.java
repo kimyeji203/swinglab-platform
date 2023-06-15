@@ -22,8 +22,9 @@ public class ZoneUriConst {
     public static final String PUT_ZONE_BOOK = "/v1/zone/{zoneId}/book/{bookId}"; // 해당 타석 예약 정보 변경
     public static final String PUT_ZONE_BOOK_CANCEL = "/v1/book/{bookId}/cancel"; // 해당 타석 예약 취소
 
-    public static final String GET_MY_BOOK_LIST = "/v1/my/book/history"; // 내 예약 내역 조회
-    public static final String GET_MY_BOOK_DETAIL = "/v1/my/book/{bookId}/history"; // 내 예약 상세 조회
+    public static final String PUT_ZONE_BOOK_CHECK_IN ="/v1/book/{bookId}/check/in"; // 입실
+    public static final String PUT_ZONE_BOOK_CHECK_OUT ="/v1/book/{bookId}/check/out"; // 퇴실
+
 
 
     /**

@@ -23,6 +23,8 @@ public class ZoneBookHist extends ZoneBookHistCore
     private String zoneNm; // 타석 명
     @Transient
     private Boolean isMyBook; // 내 예약
+    @Transient
+    private String nickNm; // 닉네임
 
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

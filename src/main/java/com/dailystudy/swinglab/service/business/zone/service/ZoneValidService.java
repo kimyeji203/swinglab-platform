@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -146,5 +147,35 @@ public class ZoneValidService extends BaseService
         {
             throw new SwinglabBadRequestException(StringUtils.join("예약 취소는 ", SwinglabConst.DF_MIN, "전까지 가능 합니다."));
         }
+    }
+
+    public void assertCanCheckIn (ZoneBookHist zoneBookHist)
+    {
+        // 취소된 예약인지
+        if (BooleanUtils.isTrue(zoneBookHist.getBookCnclYn()))
+        {
+            // 자동 취소된 예약인지
+            if (BooleanUtils.isTrue(zoneBookHist.getAutoBookCnclYn()))
+            {
+                throw new SwinglabBadRequestException(StringUtils.join("입실 가능 시간(", SwinglabConst.DF_MIN, "분)이 지나 자동 취소된 예약건입니다."));
+            }
+            throw new SwinglabBadRequestException("이미 취소된 예약건입니다.");
+        }
+
+        LocalDateTime minCanCheckInTime = zoneBookHist.getBookStDt().minusMinutes(SwinglabConst.DF_MIN);
+        LocalDateTime maxCanCheckInTime = zoneBookHist.getBookStDt().plusMinutes(SwinglabConst.DF_MIN);
+
+        // 예약 15분 전부터 입실 가능
+        if (LocalDateTime.now().isBefore(minCanCheckInTime))
+        {
+            throw new SwinglabBadRequestException(StringUtils.join(DateUtil.formatDate(minCanCheckInTime, SwinglabConst.DT_FORMAT), " 이후에 입실 가능합니다."));
+        }
+
+        // 입실 가능 시간 지났는지
+        if (LocalDateTime.now().isAfter(maxCanCheckInTime))
+        {
+            throw new SwinglabBadRequestException(StringUtils.join("입실 가능 시간(", SwinglabConst.DF_MIN, "분)이 지났습니다."));
+        }
+
     }
 }
