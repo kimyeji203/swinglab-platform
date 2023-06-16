@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -26,18 +27,35 @@ public class JwtAuthFilter extends OncePerRequestFilter
     @Value("${security.permitAll}")
     private List<String> permitAllUris;
 
+    @Value("${security.ignoring}")
+    private List<String> ignoringUris;
+
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final static AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
-        // 1. token 필요하지 않은 url 스킵 처리
-        if (permitAllUris.contains(request.getRequestURI()))
+        // 0. ignoring
+        for (String uri : ignoringUris)
         {
-            log.info("{} : permit all uri", request.getRequestURI());
-            filterChain.doFilter(request, response);
-            return;
+            if (antPathMatcher.match(uri, request.getServletPath()))
+            {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
+        // 1. token 필요하지 않은 url 스킵 처리
+        for (String uri : permitAllUris)
+        {
+            if (antPathMatcher.match(uri, request.getServletPath()))
+            {
+                log.info("{} : permit all uri", request.getServletPath());
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         // 2. Header 확인

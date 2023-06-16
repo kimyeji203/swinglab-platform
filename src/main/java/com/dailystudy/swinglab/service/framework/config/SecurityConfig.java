@@ -8,7 +8,6 @@ import com.dailystudy.swinglab.service.framework.auth.handler.AuthExceptionEntry
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,21 +36,6 @@ public class SecurityConfig
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Bean
-    public HttpFirewall defaultHttpFirewall ()
-    {
-        return new DefaultHttpFirewall();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer ()
-    {
-        return (web) -> {
-            web.httpFirewall(defaultHttpFirewall());
-            web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-            web.ignoring().requestMatchers(ignoringUris);
-        };
-    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder ()
@@ -82,6 +66,20 @@ public class SecurityConfig
     {
         return new JwtAuthExceptionFilter();
     }
+
+
+    @Bean
+    public HttpFirewall defaultHttpFirewall ()
+    {
+        return new DefaultHttpFirewall();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer ()
+    {
+        return (web) -> web.ignoring().requestMatchers(ignoringUris);
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception
