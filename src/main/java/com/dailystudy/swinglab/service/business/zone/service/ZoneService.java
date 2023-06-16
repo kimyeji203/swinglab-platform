@@ -198,10 +198,10 @@ public class ZoneService extends BaseService
      * @param bookId
      * @return
      */
-    public ZoneUsageHist checkInBook (Long bookId)
+    public ZoneUsageHist checkInBook (Long bookId, Long userId)
     {
         // 존재하는 예약건인지 (내예약인지)
-        ZoneBookHist zoneBookHist = zoneValidService.getValidBookHist(bookId);
+        ZoneBookHist zoneBookHist = zoneValidService.getValidBookHist(bookId, userId);
 
         // 이미 입실되었는지
         ZoneUsageHist zoneUsageHist = zoneUsageHistQueryRepository.findOneByKey(bookId);

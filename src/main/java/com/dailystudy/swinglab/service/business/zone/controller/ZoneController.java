@@ -104,9 +104,9 @@ public class ZoneController
      * @return
      */
     @PutMapping(ZoneUriConst.PUT_ZONE_BOOK_CHECK_IN)
-    public ResponseEntity<SuccessResponse<ZoneUsageHist>> putZoneBookCheckIn (@PathVariable("bookId") Long bookId)
+    public ResponseEntity<SuccessResponse<ZoneUsageHist>> putZoneBookCheckIn (@PathVariable("bookId") Long bookId, @RequestBody ZoneBookHist zoneBookHist)
     {
-        return PlatformResponseBuilder.build(zoneService.checkInBook(bookId));
+        return PlatformResponseBuilder.build(zoneService.checkInBook(bookId, zoneBookHist.getUserId()));
     }
 
 }

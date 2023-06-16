@@ -110,7 +110,10 @@ public class ZoneValidService extends BaseService
      */
     public ZoneBookHist getValidBookHist (Long bookId)
     {
-        Long userId = SecurityUtil.getUserId();
+        return this.getValidBookHist(bookId, SecurityUtil.getUserId());
+    }
+    public ZoneBookHist getValidBookHist (Long bookId, Long userId)
+    {
         ZoneBookHist zoneBookHist = zoneBookHistQueryRepository.findOneByKey(bookId);
         if (zoneBookHist == null)
         {
