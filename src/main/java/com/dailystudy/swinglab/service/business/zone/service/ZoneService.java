@@ -272,6 +272,6 @@ public class ZoneService extends BaseService
             }
         }
 
-        return result.stream().sorted(Comparator.comparing(ZoneBookHist::getBookStDt)).toList();
+        return result.stream().sorted(Comparator.comparing(ZoneBookHist::getBookStDt).reversed()).toList();
     }
 }
