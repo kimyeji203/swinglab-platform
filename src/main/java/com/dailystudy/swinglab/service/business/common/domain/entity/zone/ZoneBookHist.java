@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -25,6 +26,17 @@ public class ZoneBookHist extends ZoneBookHistCore
     private Boolean isMyBook; // 내 예약
     @Transient
     private String nickNm; // 닉네임
+
+
+    @Transient
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT)
+    private LocalDateTime checkInDt;
+    @Transient
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DT_FORMAT)
+    private LocalDateTime checkOutDt;
+    @Transient
+    private Boolean autoCheckOutYn;
+
 
     @Transient
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

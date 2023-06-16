@@ -9,6 +9,7 @@ import com.dailystudy.swinglab.service.business.common.repository.zone.*;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.user.service.TicketValidationService;
 import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.gen.entity.ZoneBookHistCore;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -218,5 +220,58 @@ public class ZoneService extends BaseService
         zoneUsageHist.setBookId(bookId);
         zoneUsageHist.setChkInDt(LocalDateTime.now());
         return zoneUsageHistRepository.save(zoneUsageHist);
+    }
+
+    /**
+     * 이용 내역 조회
+     *
+     * @param param
+     * @return
+     */
+    public List<ZoneBookHist> getMyZoneUsageHist (ZoneBookHist param)
+    {
+        Long userId = SecurityUtil.getUserId();
+
+        /*
+         * 데이터 조회
+         */
+        // 파라미터 기본 세팅
+        if (param.getBookDayEd() == null)
+        {
+            param.setBookDayEd(LocalDate.now());
+        }
+        if (param.getBookDaySt() == null)
+        {
+            param.setBookDaySt(param.getBookDayEd().minusDays(7));
+        }
+        param.setUserId(userId);
+        List<ZoneBookHist> result = zoneBookHistQueryRepository.findAllByWhere(param);
+        if (result == null)
+        {
+            return result;
+        }
+        // 타석 조회
+        List<Zone> zoneList = zoneRepository.findAll();
+        // 이용 이력 조회
+        List<Long> bookIdList = result.stream().map(ZoneBookHist::getBookId).toList();
+        List<ZoneUsageHist> usageHistList = zoneUsageHistQueryRepository.findListByBookIdList(bookIdList);
+
+        /*
+         * 데이터 세팅
+         */
+        Map<Long, ZoneUsageHist> usageHistMap = usageHistList.stream().collect(Collectors.toMap(ZoneUsageHist::getBookId, Function.identity()));
+        Map<Long, Zone> zoneMap = zoneList.stream().collect(Collectors.toMap(Zone::getZoneId, Function.identity()));
+        for (ZoneBookHist zoneBookHist : result)
+        {
+            zoneBookHist.setZoneNm(zoneMap.get(zoneBookHist.getZoneId()).getZoneNm());
+            if (usageHistMap.containsKey(zoneBookHist.getBookId()))
+            {
+                zoneBookHist.setCheckInDt(usageHistMap.get(zoneBookHist.getBookId()).getChkInDt());
+                zoneBookHist.setCheckOutDt(usageHistMap.get(zoneBookHist.getBookId()).getChkOutDt());
+                zoneBookHist.setAutoCheckOutYn(usageHistMap.get(zoneBookHist.getBookId()).getAutoChkOutYn());
+            }
+        }
+
+        return result.stream().sorted(Comparator.comparing(ZoneBookHist::getBookStDt)).toList();
     }
 }

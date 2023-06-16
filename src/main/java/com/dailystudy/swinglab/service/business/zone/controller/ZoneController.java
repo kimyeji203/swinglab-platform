@@ -109,4 +109,15 @@ public class ZoneController
         return PlatformResponseBuilder.build(zoneService.checkInBook(bookId, zoneBookHist.getUserId()));
     }
 
+    /**
+     * 나의 이용 내역 조회
+     *
+     * @param zoneBookHist
+     * @return
+     */
+    @GetMapping(ZoneUriConst.GET_MY_USAGE_HIST_LIST)
+    public ResponseEntity<SuccessResponse<List<ZoneBookHist>>> getMyUsageHistList (ZoneBookHist zoneBookHist)
+    {
+        return PlatformResponseBuilder.build(zoneService.getMyZoneUsageHist(zoneBookHist));
+    }
 }
