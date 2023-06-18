@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.framework.auth.filter;
 
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.domain.ErrorResponse;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabHttpException;
 import com.dailystudy.swinglab.service.framework.utils.JsonUtil;

@@ -5,7 +5,7 @@ import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBo
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneBookHistQueryRepository;
 import com.dailystudy.swinglab.service.business.common.repository.zone.ZoneRepository;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabAccessDeniedException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabNotFoundException;
@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;

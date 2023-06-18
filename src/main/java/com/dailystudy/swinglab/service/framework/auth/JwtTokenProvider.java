@@ -4,7 +4,7 @@ import com.dailystudy.swinglab.service.business.auth.service.CustomUserDetailsSe
 import com.dailystudy.swinglab.service.business.common.domain.JwtToken;
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabUnauthorizedException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
@@ -26,8 +26,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.dailystudy.swinglab.service.framework.SwinglabConst.ACCESS_TOKEN_EXPIRE_TIME;
-import static com.dailystudy.swinglab.service.framework.SwinglabConst.REFRESH_TOKEN_EXPIRE_TIME;
+import static com.dailystudy.swinglab.service.framework.core.SwinglabConst.ACCESS_TOKEN_EXPIRE_TIME;
+import static com.dailystudy.swinglab.service.framework.core.SwinglabConst.REFRESH_TOKEN_EXPIRE_TIME;
 
 @Slf4j
 @Component

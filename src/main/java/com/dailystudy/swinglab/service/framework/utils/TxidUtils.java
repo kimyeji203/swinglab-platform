@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.framework.utils;
 
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.messaging.MessageHeaders;

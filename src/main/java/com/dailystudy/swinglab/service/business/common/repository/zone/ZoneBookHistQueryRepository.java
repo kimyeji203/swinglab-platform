@@ -1,11 +1,10 @@
 package com.dailystudy.swinglab.service.business.common.repository.zone;
 
 import com.dailystudy.swinglab.service.business.common.domain.entity.zone.ZoneBookHist;
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.framework.core.gen.entity;
 
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

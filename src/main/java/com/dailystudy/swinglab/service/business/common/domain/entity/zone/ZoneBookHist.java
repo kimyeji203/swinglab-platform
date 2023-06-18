@@ -1,9 +1,8 @@
 package com.dailystudy.swinglab.service.business.common.domain.entity.zone;
 
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.core.gen.entity.ZoneBookHistCore;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +19,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class ZoneBookHist extends ZoneBookHistCore
 {
+    @Transient
+    private SwinglabConst.STATUS status;
+    @Transient
+    private String statusNm;
     @Transient
     private String zoneNm; // 타석 명
     @Transient
@@ -46,6 +49,12 @@ public class ZoneBookHist extends ZoneBookHistCore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = SwinglabConst.DAY_FORMAT)
     private LocalDate bookDayEd;
+
+    public void setStatus(SwinglabConst.STATUS status)
+    {
+        this.status = status;
+        this.statusNm = status.getStatus();
+    }
 }
 
 

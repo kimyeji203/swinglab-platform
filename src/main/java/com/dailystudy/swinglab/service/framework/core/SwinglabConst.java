@@ -1,4 +1,4 @@
-package com.dailystudy.swinglab.service.framework;
+package com.dailystudy.swinglab.service.framework.core;
 
 import lombok.Getter;
 
@@ -39,18 +39,32 @@ public class SwinglabConst
     {
         EXPIRED("TokenExpiredError", "만료된 토큰입니다."),
         TAMPERED("TokenTamperedError", "위/변조된 토큰입니다."),
-        NULL("TokenIsNullError", "유효하지 않은 토큰입니다.")
-        ;
+        NULL("TokenIsNullError", "유효하지 않은 토큰입니다.");
 
         private String title;
         private String errorMessage;
 
-        JWT_EXCEPT(String title, String errorMessage)
+        JWT_EXCEPT (String title, String errorMessage)
         {
             this.title = title;
             this.errorMessage = errorMessage;
         }
+    }
 
+    @Getter
+    public enum STATUS
+    {
+        BOOK("예약"),
+        CANCEL("예약취소"),
+        AUTO_CANCEL("자동 예약취소"),
+        CHECK_IN("입실"),
+        CHECK_OUT("퇴실");
 
+        private String status;
+
+        STATUS (String s)
+        {
+            this.status = s;
+        }
     }
 }

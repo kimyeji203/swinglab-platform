@@ -8,13 +8,13 @@ import com.dailystudy.swinglab.service.business.common.repository.user.UserQuery
 import com.dailystudy.swinglab.service.business.common.repository.zone.*;
 import com.dailystudy.swinglab.service.business.common.service.BaseService;
 import com.dailystudy.swinglab.service.business.user.service.TicketValidationService;
-import com.dailystudy.swinglab.service.framework.SwinglabConst;
-import com.dailystudy.swinglab.service.framework.core.gen.entity.ZoneBookHistCore;
+import com.dailystudy.swinglab.service.framework.core.SwinglabConst;
 import com.dailystudy.swinglab.service.framework.http.response.exception.http.SwinglabBadRequestException;
 import com.dailystudy.swinglab.service.framework.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -269,6 +269,24 @@ public class ZoneService extends BaseService
                 zoneBookHist.setCheckInDt(usageHistMap.get(zoneBookHist.getBookId()).getChkInDt());
                 zoneBookHist.setCheckOutDt(usageHistMap.get(zoneBookHist.getBookId()).getChkOutDt());
                 zoneBookHist.setAutoCheckOutYn(usageHistMap.get(zoneBookHist.getBookId()).getAutoChkOutYn());
+            }
+
+            // 상태값 세팅
+            if (BooleanUtils.isTrue(zoneBookHist.getAutoBookCnclYn())) // 자동예약취소
+            {
+                zoneBookHist.setStatus(SwinglabConst.STATUS.AUTO_CANCEL);
+            } else if (BooleanUtils.isTrue(zoneBookHist.getBookCnclYn())) // 예약취소
+            {
+                zoneBookHist.setStatus(SwinglabConst.STATUS.CANCEL);
+            } else if (zoneBookHist.getCheckOutDt() != null) // 퇴실
+            {
+                zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_OUT);
+            } else if (zoneBookHist.getCheckInDt() != null) // 입실
+            {
+                zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_IN);
+            } else
+            {
+                zoneBookHist.setStatus(SwinglabConst.STATUS.BOOK);
             }
         }
 
