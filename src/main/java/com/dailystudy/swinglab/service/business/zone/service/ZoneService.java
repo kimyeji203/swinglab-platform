@@ -41,6 +41,39 @@ public class ZoneService extends BaseService
     private final ZoneUsageHistRepository zoneUsageHistRepository;
     private final ZoneUsageHistQueryRepository zoneUsageHistQueryRepository;
 
+
+    /**
+     * 타석 목록 조회
+     *
+     * @return
+     */
+    public List<Zone> getZoneAllList ()
+    {
+        return zoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
+    }
+
+    /**
+     * 타석 상세 조회
+     *
+     * @param zoneSid
+     * @return
+     */
+    public Zone getZoneDetail (Long zoneSid)
+    {
+        this.assertNotEmpty(zoneSid, "타석 ID");
+
+        // TODO 금일 예약 가능 여부
+        // TODO 금일 내 예약 여부
+
+        return zoneValidService.getValidZone(zoneSid);
+    }
+
+    /**
+     * 전체 예약 현황 조회
+     *
+     * @param param
+     * @return
+     */
     public List<ZoneBookHist> getZoneBookList (ZoneBookHist param)
     {
         Long userId = SecurityUtil.getUserId();
@@ -77,39 +110,16 @@ public class ZoneService extends BaseService
         Map<Long, Zone> zoneMap = zoneList.stream().collect(Collectors.toMap(Zone::getZoneId, Function.identity()));
         for (ZoneBookHist zoneBookHist : result)
         {
-            zoneBookHist.setNickNm(userMap.get(zoneBookHist.getUserId()) == null ? SwinglabConst.UNKNOWN : userMap.get(zoneBookHist.getUserId()).getNickNm());
             zoneBookHist.setZoneNm(zoneMap.get(zoneBookHist.getZoneId()).getZoneNm());
+            zoneBookHist.setNickNm(userMap.get(zoneBookHist.getUserId()) == null ? SwinglabConst.UNKNOWN : userMap.get(zoneBookHist.getUserId()).getNickNm());
             zoneBookHist.setIsMyBook(userId.equals(zoneBookHist.getUserId()));
+
+            this.setBookStatus(zoneBookHist);
         }
 
         return result;
     }
 
-    /**
-     * 타석 목록 조회
-     *
-     * @return
-     */
-    public List<Zone> getZoneAllList ()
-    {
-        return zoneRepository.findAll(Sort.by(Sort.Direction.DESC, "regDt"));
-    }
-
-    /**
-     * 타석 상세 조회
-     *
-     * @param zoneSid
-     * @return
-     */
-    public Zone getZoneDetail (Long zoneSid)
-    {
-        this.assertNotEmpty(zoneSid, "타석 ID");
-
-        // TODO 금일 예약 가능 여부
-        // TODO 금일 내 예약 여부
-
-        return zoneValidService.getValidZone(zoneSid);
-    }
 
     /**
      * 해당 타석 예약
@@ -142,7 +152,11 @@ public class ZoneService extends BaseService
         bookHist.setZoneId(zoneId);
         bookHist.setBookCnclYn(false);
         bookHist.setAutoBookCnclYn(false);
-        return zoneBookHistRepository.save(bookHist);
+        bookHist = zoneBookHistRepository.save(bookHist);
+
+        this.setBookStatus(bookHist);
+        this.setMyBookInfo(bookHist);
+        return bookHist;
     }
 
     /**
@@ -191,7 +205,10 @@ public class ZoneService extends BaseService
         // 예약 취소
         zoneBookHistQueryRepository.updateBookCnclYnTrueByKey(bookId);
 
-        return zoneBookHistQueryRepository.findOneByKey(bookId);
+        zoneBookHist = zoneBookHistQueryRepository.findOneByKey(bookId);
+        this.setBookStatus(zoneBookHist);
+        this.setMyBookInfo(zoneBookHist);
+        return zoneBookHist;
     }
 
     /**
@@ -219,7 +236,10 @@ public class ZoneService extends BaseService
         zoneUsageHist = ZoneUsageHist.builder().build();
         zoneUsageHist.setBookId(bookId);
         zoneUsageHist.setChkInDt(LocalDateTime.now());
-        return zoneUsageHistRepository.save(zoneUsageHist);
+
+        zoneUsageHist = zoneUsageHistRepository.save(zoneUsageHist);
+        this.setMyBookInfo(zoneUsageHist);
+        return zoneUsageHist;
     }
 
     /**
@@ -271,25 +291,43 @@ public class ZoneService extends BaseService
                 zoneBookHist.setAutoCheckOutYn(usageHistMap.get(zoneBookHist.getBookId()).getAutoChkOutYn());
             }
 
-            // 상태값 세팅
-            if (BooleanUtils.isTrue(zoneBookHist.getAutoBookCnclYn())) // 자동예약취소
-            {
-                zoneBookHist.setStatus(SwinglabConst.STATUS.AUTO_CANCEL);
-            } else if (BooleanUtils.isTrue(zoneBookHist.getBookCnclYn())) // 예약취소
-            {
-                zoneBookHist.setStatus(SwinglabConst.STATUS.CANCEL);
-            } else if (zoneBookHist.getCheckOutDt() != null) // 퇴실
-            {
-                zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_OUT);
-            } else if (zoneBookHist.getCheckInDt() != null) // 입실
-            {
-                zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_IN);
-            } else
-            {
-                zoneBookHist.setStatus(SwinglabConst.STATUS.BOOK);
-            }
+            this.setBookStatus(zoneBookHist);
+            this.setMyBookInfo(zoneBookHist);
         }
 
         return result.stream().sorted(Comparator.comparing(ZoneBookHist::getBookStDt).reversed()).toList();
     }
+
+    private void setMyBookInfo(ZoneUsageHist zoneUsageHist)
+    {
+        zoneUsageHist.setNickNm(SecurityUtil.getUserInfo().getNickNm());
+    }
+
+    private void setMyBookInfo(ZoneBookHist zoneBookHist)
+    {
+        zoneBookHist.setNickNm(SecurityUtil.getUserInfo().getNickNm());
+        zoneBookHist.setIsMyBook(true);
+    }
+
+    private void setBookStatus(ZoneBookHist zoneBookHist)
+    {
+        // 상태값 세팅
+        if (BooleanUtils.isTrue(zoneBookHist.getAutoBookCnclYn())) // 자동예약취소
+        {
+            zoneBookHist.setStatus(SwinglabConst.STATUS.AUTO_CANCEL);
+        } else if (BooleanUtils.isTrue(zoneBookHist.getBookCnclYn())) // 예약취소
+        {
+            zoneBookHist.setStatus(SwinglabConst.STATUS.CANCEL);
+        } else if (zoneBookHist.getCheckOutDt() != null) // 퇴실
+        {
+            zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_OUT);
+        } else if (zoneBookHist.getCheckInDt() != null) // 입실
+        {
+            zoneBookHist.setStatus(SwinglabConst.STATUS.CHECK_IN);
+        } else
+        {
+            zoneBookHist.setStatus(SwinglabConst.STATUS.BOOK);
+        }
+    }
+
 }

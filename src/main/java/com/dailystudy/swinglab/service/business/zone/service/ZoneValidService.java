@@ -62,7 +62,7 @@ public class ZoneValidService extends BaseService
         // 시작시간 확인 (과거인지)
         if (bookHist.getBookStDt().isBefore(now))
         {
-            throw new SwinglabBadRequestException(StringUtils.join(DateUtil.formatDate(now, SwinglabConst.DT_FORMAT), " 이후 예약 가능합니다."));
+            throw new SwinglabBadRequestException(StringUtils.join(DateUtil.formatDate(now.plusMinutes(1), SwinglabConst.DT_FORMAT), " 이후 예약 가능합니다."));
         }
         // 시작과 끝 올바른지
         if (bookHist.getBookStDt().isAfter(bookHist.getBookEdDt()) || bookHist.getBookStDt().equals(bookHist.getBookEdDt()))

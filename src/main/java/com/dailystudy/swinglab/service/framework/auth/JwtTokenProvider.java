@@ -1,6 +1,6 @@
 package com.dailystudy.swinglab.service.framework.auth;
 
-import com.dailystudy.swinglab.service.business.auth.service.CustomUserDetailsService;
+import com.dailystudy.swinglab.service.business.auth.service.SwinglabUserDetailsService;
 import com.dailystudy.swinglab.service.business.common.domain.JwtToken;
 import com.dailystudy.swinglab.service.business.common.domain.entity.user.User;
 import com.dailystudy.swinglab.service.business.common.repository.user.UserRepository;
@@ -38,7 +38,7 @@ public class JwtTokenProvider
     private String securityJwtKey;
 
     private final UserRepository userRepository;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final SwinglabUserDetailsService swinglabUserDetailsService;
 
     @PostConstruct
     protected void init ()
@@ -245,7 +245,7 @@ public class JwtTokenProvider
      */
     public Authentication getAuthenticationFromToken (String loginId)
     {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
+        UserDetails userDetails = swinglabUserDetailsService.loadUserByUsername(loginId);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
