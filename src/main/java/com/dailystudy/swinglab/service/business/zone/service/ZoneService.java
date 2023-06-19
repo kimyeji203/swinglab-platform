@@ -139,7 +139,7 @@ public class ZoneService extends BaseService
         assertNotEmpty(bookHist.getBookEdDt(), "예약 시간(종료)");
 
         // 존재하는 타석인지 확인
-        zoneValidService.getValidZone(zoneId);
+        Zone zone = zoneValidService.getValidZone(zoneId);
 
         // 이용권 보유 여부 체크
         ticketValidationService.assertHaveTicket();
@@ -153,6 +153,7 @@ public class ZoneService extends BaseService
         bookHist.setBookCnclYn(false);
         bookHist.setAutoBookCnclYn(false);
         bookHist = zoneBookHistRepository.save(bookHist);
+        bookHist.setZoneNm(zone.getZoneNm());
 
         this.setBookStatus(bookHist);
         this.setMyBookInfo(bookHist);
