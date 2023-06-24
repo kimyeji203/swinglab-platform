@@ -24,7 +24,7 @@ public class AutoBookCancelScheduler
     private final AutoBookCancelJobConfig autoBookCancelJobConfig;
 
     //    @Scheduled(cron = "*/10 * * * * *")
-    @Scheduled(cron = SwinglabConst.CRON_DAILY)
+    @Scheduled(cron = SwinglabConst.CRON_1MIN)
     public void runJob ()
     {
         String jobName = autoBookCancelJobConfig.job().getName();

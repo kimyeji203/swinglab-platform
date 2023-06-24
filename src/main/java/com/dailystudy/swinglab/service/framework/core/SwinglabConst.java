@@ -20,7 +20,7 @@ public class SwinglabConst
      * Batch
      */
     public static final int CHK_SIZE = 100;
-    public static final String CRON_DAILY = "0 0 * * * *";
+    public static final String CRON_1MIN = "0 * * * * *";
 
     /*
      * Redis
