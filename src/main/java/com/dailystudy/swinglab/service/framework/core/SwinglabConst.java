@@ -55,10 +55,14 @@ public class SwinglabConst
     public enum STATUS
     {
         BOOK("예약"),
-        CANCEL("예약취소"),
         AUTO_CANCEL("자동 예약취소"),
         CHECK_IN("입실"),
-        CHECK_OUT("퇴실");
+        CHECK_OUT("퇴실"),
+
+        CANCEL("취소"),
+        WAITTING("대기"),
+        USE("이용")
+        ;
 
         private String status;
 
