@@ -17,6 +17,12 @@ public class SwinglabConst
     public static final Integer DF_MIN = 15;
 
     /*
+     * Batch
+     */
+    public static final int CHK_SIZE = 100;
+    public static final String CRON_DAILY = "0 0 * * * *";
+
+    /*
      * Redis
      */
     public static final String REDIS_KEY_LOGIN_REFRESH_TOKEN = "LOGIN-RT";

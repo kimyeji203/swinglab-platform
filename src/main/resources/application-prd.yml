@@ -6,6 +6,9 @@ server:
 api-test: false
 
 spring:
+  batch:
+    jdbc:
+      initialize-schema: always
   jpa:
     show-sql: false
     hibernate:
