@@ -5,7 +5,7 @@
     <property name="LOG_BACKUP_HOME" value="${LOG_HOME}/backup"/>
     <property name="LOG_PREFIX" value="swinglab" />
     
-    <property name="MAX_HISTORY" value="30" />
+    <property name="MAX_HISTORY" value="15" />
     <property name="MAX_FILE_SIZE" value="100MB"/>
 
     <property name="DEBUG_PATTERN" value="%d{HH:mm:ss.SSS} [%tid]-[%X{TXID}] [%-5level] %class{0}.%M:%L - %msg%n"/>
