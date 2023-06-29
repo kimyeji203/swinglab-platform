@@ -19,7 +19,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: false
-        show_sql: false
+        show_sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://13.125.190.65:5432/swinglab?currentSchema=public&useSSL=false&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&stringtype=unspecified

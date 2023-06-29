@@ -44,7 +44,6 @@ public class AutoBookCancelJobConfig
     @Bean
     public Job job ()
     {
-        targetTime = LocalDateTime.now().minusMinutes(SwinglabConst.DF_MIN);
         return new JobBuilder(JOB_NAME, jobRepository)
                 .start(step())
                 .build();
@@ -66,6 +65,10 @@ public class AutoBookCancelJobConfig
     @StepScope
     public QuerydslPagingItemReader<ZoneBookHist> reader ()
     {
+        targetTime = LocalDateTime.now().minusMinutes(SwinglabConst.DF_MIN);
+        LoggerConst.BATCH_LOGGER.info(LoggerConst.BATCH_WORK_LOG_FM, JOB_NAME, StringUtils.join(
+                "Target is bookings before ", DateUtil.formatDate(targetTime, SwinglabConst.DT_FORMAT)
+        ));
         return new QuerydslPagingItemReader<>(entityManagerFactory,
                 SwinglabConst.CHK_SIZE,
                 queryFactory -> queryFactory
@@ -85,10 +88,10 @@ public class AutoBookCancelJobConfig
     @StepScope
     public ItemProcessor<ZoneBookHist, ZoneBookHist> processor ()
     {
-        LoggerConst.BATCH_LOGGER.info(LoggerConst.BATCH_WORK_LOG_FM, JOB_NAME, StringUtils.join(
-                "Target is bookings before ", DateUtil.formatDate(targetTime, SwinglabConst.DT_FORMAT)
-        ));
         return item -> {
+            LoggerConst.BATCH_LOGGER.info(LoggerConst.BATCH_WORK_LOG_FM, JOB_NAME, StringUtils.join(
+                    " Automatically canceled => ", item.getBookId()
+            ));
             item.setBookCnclYn(true);
             item.setAutoBookCnclYn(true);
             return item;
